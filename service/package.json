@@ -1,0 +1,36 @@
+{
+  "type": "module",
+  "name": "notifications",
+  "version": "1.0.0",
+  "description": "Express.js app for the USupport notifications API service",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"No tests set up\" && exit 1",
+    "dev": "NODE_ENV=dev nodemon server.js",
+    "build": "echo \"No build command set up\" && exit 1",
+    "prod": "NODE_ENV=production npm run build && node build/server.js"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "helmet": "^6.0.0",
+    "node-fetch": "^3.2.10",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "eslint": "^8.23.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1"
+  },
+  "imports": {
+    "#routes/*": "./routes/*.js",
+    "#controllers/*": "./controllers/*.js",
+    "#middlewares/*": "./middlewares/*.js",
+    "#utils/*": "./utils/*.js",
+    "#queries/*": "./queries/*.js",
+    "#schemas/*": "./schemas/*.js"
+  }
+}

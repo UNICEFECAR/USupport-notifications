@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "#routes/*": ["./routes/*.js"],
+      "#controllers/*": ["./controllers/*.js"],
+      "#middlewares/*": ["./middlewares/*.js"],
+      "#utils/*": ["./utils/*.js"],
+      "#queries/*": ["./queries/*.js"],
+      "#schemas/*": ["./schemas/*.js"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
