@@ -1,4 +1,7 @@
-import fetch from "node-fetch";
+export const handlePushNotificationConsumerMessage = ({ message }) => {
+  const messageJSON = JSON.parse(message.value.toString());
 
-// Here you can put any helper functions
-// that can be reused in the controllers
+  console.log(messageJSON);
+
+  // TODO: Add logic to handle Push notifications
+};
