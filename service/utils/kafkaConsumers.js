@@ -11,7 +11,10 @@ const consumer = kafka.consumer({ groupId: "notification-service-group" });
 
 export const consumeNotificationMessages = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: "send-notification", fromBeginning: true });
+  await consumer.subscribe({
+    topic: "send-notification",
+    fromBeginning: false,
+  });
 
   await consumer.run({
     eachMessage: handleNotificationConsumerMessage,
