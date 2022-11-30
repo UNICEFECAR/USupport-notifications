@@ -7,7 +7,8 @@
       "#middlewares/*": ["./middlewares/*.js"],
       "#utils/*": ["./utils/*.js"],
       "#queries/*": ["./queries/*.js"],
-      "#schemas/*": ["./schemas/*.js"]
+      "#schemas/*": ["./schemas/*.js"],
+      "#translations/*": ["./translations/*.js"]
     }
   },
   "exclude": ["node_modules"]

@@ -1,6 +1,6 @@
 import { Kafka } from "kafkajs";
 
-import { handlePushNotificationConsumerMessage } from "./helperFunctions.js";
+import { handleNotificationConsumerMessage } from "./helperFunctions.js";
 
 const kafka = new Kafka({
   clientId: "notificationsAPI",
@@ -9,11 +9,11 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: "notification-service-group" });
 
-export const consumePushNotificationMessages = async () => {
+export const consumeNotificationMessages = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: "send-push", fromBeginning: true });
+  await consumer.subscribe({ topic: "send-notification", fromBeginning: true });
 
   await consumer.run({
-    eachMessage: handlePushNotificationConsumerMessage,
+    eachMessage: handleNotificationConsumerMessage,
   });
 };

@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import v1 from "#routes/index";
 import middleware from "#middlewares/index";
 
+import { consumeNotificationMessages } from "#utils/kafkaConsumers";
+
 dotenv.config();
 
 const app = express();
@@ -28,4 +30,8 @@ app.use(middleware.errorMiddleware.errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Notifications Server listening on port ${PORT}`);
+
+  consumeNotificationMessages()
+    .then(() => console.log("Kafka Consumer Running..."))
+    .catch(console.log);
 });
