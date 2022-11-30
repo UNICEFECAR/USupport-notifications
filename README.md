@@ -34,7 +34,7 @@ The available types of notifications are as follows:
 - Client: notify about consultation suggestion
 - Provider: confirm consultation suggestion
 
-7. consultation_suggestion_confirmation
+7. consultation_suggestion_booking
 
 - Client: confirm booked consultation suggestion
 - Provider: notify about booked consultation suggestion
