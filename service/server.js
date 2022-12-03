@@ -6,11 +6,13 @@ import v1 from "#routes/index";
 import middleware from "#middlewares/index";
 
 import { consumeNotificationMessages } from "#utils/kafkaConsumers";
+import { scheduleJobs } from "#utils/scheduleJobs";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3005;
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 /*------------- Security Config -------------*/
 
@@ -35,3 +37,8 @@ app.listen(PORT, () => {
     .then(() => console.log("Kafka Consumer Running..."))
     .catch(console.log);
 });
+
+/*------------------ Scheduled Jobs ------------------*/
+if (NODE_ENV === "production") {
+  scheduleJobs();
+}
