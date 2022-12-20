@@ -39,7 +39,7 @@ export const getErrorResponse = (error) => {
   };
 };
 
-export const errorHandler = (err, req, res) => {
+export const errorHandler = (err, req, res, next) => {
   //all errors pass through here
   const { name, message, status } = getErrorResponse(err);
   console.log(err);

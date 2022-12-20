@@ -1,6 +1,7 @@
 import {
   addNotificationQuery,
   getNotificationsByUserIdQuery,
+  getUnreadNotificationsByUserIdQuery,
   updateNotificationIsReadQuery,
 } from "#queries/notifications";
 
@@ -22,8 +23,12 @@ export const raiseInPlatformNotification = async ({
   });
 };
 
-export const getNotificationsByUserId = async ({ country, userId }) => {
-  return await getNotificationsByUserIdQuery({ poolCountry: country, userId })
+export const getNotificationsByUserId = async ({ country, userId, pageNo }) => {
+  return await getNotificationsByUserIdQuery({
+    poolCountry: country,
+    userId,
+    pageNo,
+  })
     .then((res) => {
       if (res.rowCount === 0) {
         return [];
@@ -36,14 +41,34 @@ export const getNotificationsByUserId = async ({ country, userId }) => {
     });
 };
 
+export const getHasUnreadNotificationsByUserId = async ({
+  country,
+  userId,
+}) => {
+  return await getUnreadNotificationsByUserIdQuery({
+    poolCountry: country,
+    userId,
+  })
+    .then((res) => {
+      if (res.rowCount === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
 export const updateNotificationIsRead = async ({
   country,
   language,
-  notificationId,
+  notificationIds,
 }) => {
   return await updateNotificationIsReadQuery({
     poolCountry: country,
-    notificationId,
+    notificationIds,
   })
     .then((res) => {
       if (res.rowCount === 0) {
