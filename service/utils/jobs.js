@@ -121,6 +121,8 @@ export const remindConsultationStartJob = async () => {
                   country: poolCountry,
                   data: {
                     minToConsultation: timeDiffMin,
+                    provider_detail_id: clientConsultation.provider_detail_id,
+                    time: clientConsultation.time,
                   },
                 },
                 language: "en", // TODO: Get the language from the client
@@ -175,6 +177,8 @@ export const remindConsultationStartJob = async () => {
                   country: poolCountry,
                   data: {
                     minToConsultation: timeDiffMin,
+                    client_detail_id: providerConsultation.client_detail_id,
+                    time: providerConsultation.time,
                   },
                 },
                 language: "en", // TODO: Get the language from the provider
