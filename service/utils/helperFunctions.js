@@ -1,6 +1,9 @@
 import { produceSendEmail } from "#utils/kafkaProducers";
 
-import { raiseInPlatformNotification } from "#controllers/notifications";
+import {
+  raiseInPlatformNotification,
+  raisePushNotification,
+} from "#controllers/notifications";
 
 export const handleNotificationConsumerMessage = async ({ message }) => {
   const messageJSON = JSON.parse(message.value.toString());
@@ -31,13 +34,14 @@ export const handleNotificationConsumerMessage = async ({ message }) => {
       data: inPlatformArgs.data,
     });
   }
-  // TODO: uncomment when push notifications are implemented
-  // if (channels.includes("push")) {
-  //   raisePushNotification({
-  //     notificationType: pushArgs.notificationType,
-  //     language,
-  //     pushToken: pushArgs.pushToken,
-  //     data: pushArgs.data,
-  //   });
-  // }
+
+  if (channels.includes("push")) {
+    raisePushNotification({
+      notificationType: pushArgs.notificationType,
+      country: pushArgs.country,
+      language,
+      pushTokensArray: pushArgs.pushTokensArray,
+      data: pushArgs.data,
+    });
+  }
 };

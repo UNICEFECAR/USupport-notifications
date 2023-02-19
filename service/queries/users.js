@@ -19,7 +19,7 @@ export const getClientsDetailsForUpcomingConsultationsQuery = async ({
 }) =>
   await getDBPool("piiDb", poolCountry).query(
     `
-      SELECT "user".user_id as userId, "client_detail".client_detail_id as id, "client_detail".email as email, "notification_preference".email as emailNotificationsEnabled, "notification_preference".consultation_reminder_min as consultationReminderMin
+      SELECT "user".user_id as userId, "client_detail".client_detail_id as id, "client_detail".email as email, "notification_preference".email as emailNotificationsEnabled, "notification_preference".consultation_reminder_min as consultationReminderMin, "client_detail".push_notification_tokens
       FROM "user"
         INNER JOIN "client_detail" ON "user".client_detail_id = "client_detail".client_detail_id
         INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id
@@ -34,7 +34,7 @@ export const getProvidersDetailsForUpcomingConsultationsQuery = async ({
 }) =>
   await getDBPool("piiDb", poolCountry).query(
     `
-        SELECT "user".user_id as userId, "provider_detail".provider_detail_id as id, "provider_detail".email as email, "notification_preference".email as emailNotificationsEnabled, "notification_preference".consultation_reminder_min as consultationReminderMin
+        SELECT "user".user_id as userId, "provider_detail".provider_detail_id as id, "provider_detail".email as email, "notification_preference".email as emailNotificationsEnabled, "notification_preference".consultation_reminder_min as consultationReminderMin, "provider_detail".name as provider_name, "provider_detail".patronym as provider_patronym, "provider_detail".surname as provider_surname
         FROM "user"
           INNER JOIN "provider_detail" ON "user".provider_detail_id = "provider_detail".provider_detail_id
           INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id

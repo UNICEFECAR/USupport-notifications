@@ -101,13 +101,27 @@ export const remindConsultationStartJob = async () => {
         const timeDiff = consultationTime - now;
         const timeDiffMin = Math.round(timeDiff / 60000);
 
+        const providerDetails =
+          providersDetails.find(
+            (x) => x.id === clientConsultation.provider_detail_id
+          ) || {};
+
+        const {
+          provider_name: providerName,
+          provider_patronym: providerPatronym,
+          provider_surname: providerSurname,
+        } = providerDetails;
+        const providerFullName = providerPatronym
+          ? `${providerName} ${providerPatronym} ${providerSurname}`
+          : `${providerName} ${providerSurname}`;
+
         if (timeDiffMin <= reminderMin) {
           const shouldEmail = client.email && client.emailnotificationsenabled;
 
           await handleNotificationConsumerMessage({
             message: {
               value: JSON.stringify({
-                channels: [shouldEmail ? "email" : "", "in-platform"],
+                channels: [shouldEmail ? "email" : "", "in-platform", "push"],
                 emailArgs: {
                   emailType: "client-consultationRemindStart",
                   recipientEmail: client.email,
@@ -123,6 +137,16 @@ export const remindConsultationStartJob = async () => {
                     minToConsultation: timeDiffMin,
                     provider_detail_id: clientConsultation.provider_detail_id,
                     time: clientConsultation.time,
+                    consultationId: clientConsultation.id,
+                  },
+                },
+                pushArgs: {
+                  notificationType: "consultation_remind_start",
+                  pushTokensArray: client.push_notification_tokens,
+                  country: poolCountry,
+                  data: {
+                    minToConsultation: timeDiffMin,
+                    providerName: providerFullName,
                   },
                 },
                 language: "en", // TODO: Get the language from the client
@@ -179,6 +203,7 @@ export const remindConsultationStartJob = async () => {
                     minToConsultation: timeDiffMin,
                     client_detail_id: providerConsultation.client_detail_id,
                     time: providerConsultation.time,
+                    consultationId: providerConsultation.id,
                   },
                 },
                 language: "en", // TODO: Get the language from the provider

@@ -7,6 +7,9 @@ import {
 
 import { notificationNotFound } from "#utils/errors";
 
+import { t } from "#translations/index";
+import { sendPushNotification } from "#utils/sendPushNotification";
+
 export const raiseInPlatformNotification = async ({
   notificationType,
   country,
@@ -80,4 +83,69 @@ export const updateNotificationIsRead = async ({
     .catch((err) => {
       throw err;
     });
+};
+
+export const raisePushNotification = async ({
+  notificationType,
+  country,
+  language,
+  pushTokensArray,
+  data,
+}) => {
+  let notificationTitle, notificationMessage, navigationData;
+  switch (notificationType) {
+    case "consultation_booking":
+      notificationTitle = t("consultation_booking");
+      notificationMessage = t("consultation_booking_message", language, [
+        data.providerName,
+      ]);
+      break;
+    case "consultation_suggestion":
+      notificationTitle = t("consultation_suggestion");
+      notificationMessage = t("consultation_suggestion_message", language, [
+        data.providerName,
+      ]);
+      break;
+    case "consultation_cancellation":
+      notificationTitle = t("consultation_cancellation");
+      notificationMessage = t(
+        data.canceledBy === "client"
+          ? "consultation_cancellation_message"
+          : "consultation_cancellation_by_provider_message",
+        language,
+        [data.providerName]
+      );
+      break;
+    case "consultation_suggestion_booking":
+      notificationTitle = t("consultation_suggestion_booking");
+      notificationMessage = t(
+        "consultation_suggestion_booking_message",
+        language,
+        [data.providerName]
+      );
+      break;
+    case "consultation_reschedule":
+      notificationTitle = t("consultation_reschedule");
+      notificationMessage = t("consultation_reschedule_message", language, [
+        data.providerName,
+      ]);
+      break;
+    case "consultation_remind_start":
+      notificationTitle = t("consultation_reminder");
+      notificationMessage = t("consultation_reminder_message", language, [
+        data.providerName,
+        data.minToConsultation,
+      ]);
+      break;
+    default:
+      break;
+  }
+
+  sendPushNotification({
+    pushTokensArray,
+    title: notificationTitle,
+    body: notificationMessage,
+    navigationData,
+    clientDetailId: data.clientDetailId,
+  });
 };
