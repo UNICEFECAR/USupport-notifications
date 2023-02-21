@@ -11,11 +11,14 @@ export const sendPushNotification = ({
   navigationData,
   clientDetailId,
 }) => {
+  if (!Array.isArray(pushTokensArray)) return;
   const expo = new Expo();
   const messages = [];
   for (const pushToken of pushTokensArray) {
     if (!Expo.isExpoPushToken(pushToken)) {
-      console.error(`Push token ${pushToken} is not a valid Expo push token`);
+      console.error(
+        `Push token ${pushToken} belonging to ${clientDetailId} is not a valid Expo push token`
+      );
       continue;
     }
     messages.push({
