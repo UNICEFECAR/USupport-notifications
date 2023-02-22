@@ -39,6 +39,6 @@ app.listen(PORT, () => {
 });
 
 /*------------------ Scheduled Jobs ------------------*/
-// if (NODE_ENV === "production") {
-scheduleJobs();
-// }
+if (NODE_ENV === "production") {
+  scheduleJobs();
+}
