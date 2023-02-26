@@ -137,7 +137,7 @@ export const remindConsultationStartJob = async () => {
                     minToConsultation: timeDiffMin,
                     provider_detail_id: clientConsultation.provider_detail_id,
                     time: clientConsultation.time,
-                    consultationId: clientConsultation.id,
+                    consultation_id: clientConsultation.id,
                   },
                 },
                 pushArgs: {
@@ -203,7 +203,7 @@ export const remindConsultationStartJob = async () => {
                     minToConsultation: timeDiffMin,
                     client_detail_id: providerConsultation.client_detail_id,
                     time: providerConsultation.time,
-                    consultationId: providerConsultation.id,
+                    consultation_id: providerConsultation.id,
                   },
                 },
                 language: "en", // TODO: Get the language from the provider
