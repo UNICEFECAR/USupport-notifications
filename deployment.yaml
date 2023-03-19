@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      containers:
+      - name: notifications
+        image: {TODO: CHANGE}
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+          name: notifications-secrets
+        - configMapRef:
+            name: notifications-config
+        ports:
+        - containerPort: 3005
+      imagePullSecrets:
+      - name: regcred

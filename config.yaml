@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notifications-config
+data:
+  NODE_ENV: production
+  PORT: 3005
+
+  KAFKAJS_NO_PARTITIONER_WARNING: 1
+  
