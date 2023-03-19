@@ -3,10 +3,8 @@ kind: Service
 metadata:
   name: notifications-service
 spec:
-  type: NodePort
   selector:
     app: notifications
   ports:
-    - nodePort: 31479
-      port: 8080
+    - port: 3005
       targetPort: 3005

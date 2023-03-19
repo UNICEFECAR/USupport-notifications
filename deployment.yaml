@@ -17,11 +17,11 @@ spec:
     spec:
       containers:
       - name: notifications
-        image: {TODO: CHANGE}
+        image: 482053628475.dkr.ecr.eu-central-1.amazonaws.com/usupport-notifications-api
         imagePullPolicy: Always
         envFrom:
         - secretRef:
-          name: notifications-secrets
+            name: notifications-secrets
         - configMapRef:
             name: notifications-config
         ports:
