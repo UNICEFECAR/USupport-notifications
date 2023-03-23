@@ -1,5 +1,5 @@
 export default {
-  notification_not_found_error: "Notification not found",
+  notification_not_found_error: "Уведомление не найдено",
   consultation_booking: "New consultation booked",
   consultation_booking_message:
     "Your consultation with provider {1} was scheduled successfully",
@@ -17,13 +17,13 @@ export default {
   consultation_reschedule: "Consultation rescheduled",
   consultation_reschedule_message:
     "Your consultation with provider {1} was rescheduled",
-  consultation_reminder: "Consultation reminder",
+  consultation_reminder: "Напоминание о консультации",
   consultation_reminder_message:
     "Your consultation with provider {1} starts in {2} minutes",
-  client: "Client",
-  price: "Price",
+  client: "Клиент",
+  price: "Цена",
   consultation_time: "Consultation time",
-  campaign: "Campaign",
-  free: "Free",
+  campaign: "Кампания",
+  free: "Свободно",
   schedule: "Schedule on",
 };
