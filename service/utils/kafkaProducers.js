@@ -12,12 +12,16 @@ export const produceSendEmail = async ({
   language,
   recipientEmail,
   data,
+  recipientUserType,
+  country,
 }) => {
   const payload = JSON.stringify({
     emailType,
     language,
     recipientEmail,
     data,
+    recipientUserType,
+    country,
   });
   await producer.connect();
   await producer.send({

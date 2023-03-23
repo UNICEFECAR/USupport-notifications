@@ -23,7 +23,9 @@ export const handleNotificationConsumerMessage = async ({ message }) => {
       emailType: emailArgs.emailType,
       language,
       recipientEmail: emailArgs.recipientEmail,
+      recipientUserType: emailArgs.recipientUserType,
       data: emailArgs.data,
+      country: inPlatformArgs?.country,
     });
   }
   if (channels.includes("in-platform")) {
