@@ -14,7 +14,34 @@ import { getAllActiveCountries } from "#queries/countries";
 
 import { getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery } from "#queries/availability";
 
+import {
+  getActivitiesQuery,
+  getAllCampaignNamesQuery,
+  getCurrencyByCountryIdQuery,
+} from "#queries/providers";
+
 import { handleNotificationConsumerMessage } from "#utils/helperFunctions";
+import { getMultipleClientsNamesByIDs } from "#queries/clients";
+import { t } from "#translations/index";
+
+function getReportDate(date) {
+  const newDate = new Date(date);
+  const day = newDate.getDate();
+  const month = newDate.getMonth() + 1;
+  const fullYear = newDate.getFullYear();
+  const year = fullYear.toString().slice(-2);
+
+  const formattedDate = `${day < 10 ? `0${day}` : day}.${
+    month < 10 ? `0${month}` : month
+  }.${year}`;
+
+  const time = newDate.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `${formattedDate} - ${time}`;
+}
 
 export const remindConsultationStartJob = async () => {
   // Get all the active countries from the database
@@ -87,6 +114,7 @@ export const remindConsultationStartJob = async () => {
     // For each client and provider, send a reminder email and update the database to reflect that the reminder has been sent for that consultation
     for (let i = 0; i < clientsDetails.length; i++) {
       const client = clientsDetails[i];
+      const clientLanguage = client.language;
       const reminderMin = client.consultationremindermin;
 
       const clientConsultation = consultations.find(
@@ -125,6 +153,8 @@ export const remindConsultationStartJob = async () => {
                 emailArgs: {
                   emailType: "client-consultationRemindStart",
                   recipientEmail: client.email,
+                  recipientUserType: "client",
+
                   data: {
                     minToConsultation: timeDiffMin,
                   },
@@ -149,7 +179,7 @@ export const remindConsultationStartJob = async () => {
                     providerName: providerFullName,
                   },
                 },
-                language: "en", // TODO: Get the language from the client
+                language: clientLanguage,
               }),
             },
           }).catch(console.log);
@@ -166,6 +196,7 @@ export const remindConsultationStartJob = async () => {
 
     for (let i = 0; i < providersDetails.length; i++) {
       const provider = providersDetails[i];
+      const providerLanguage = provider.language;
       const reminderMin = provider.consultationremindermin;
 
       const providerConsultation = consultations.find(
@@ -191,6 +222,7 @@ export const remindConsultationStartJob = async () => {
                 emailArgs: {
                   emailType: "provider-consultationRemindStart",
                   recipientEmail: provider.email,
+                  recipientUserType: "provider",
                   data: {
                     minToConsultation: timeDiffMin,
                   },
@@ -206,7 +238,7 @@ export const remindConsultationStartJob = async () => {
                     consultation_id: providerConsultation.id,
                   },
                 },
-                language: "en", // TODO: Get the language from the provider
+                language: providerLanguage,
               }),
             },
           }).catch(console.log);
@@ -252,10 +284,11 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
     // For each provider, add more availability slots
     for (let i = 0; i < providers?.length; i++) {
       const provider = providers[i];
+      const providerLanguage = provider.language;
 
       const dateInSevenDays = new Date();
       dateInSevenDays.setDate(dateInSevenDays.getDate() + 7);
-      const lastAvailabilitySlot = provider.availabilityslots.sort(
+      const lastAvailabilitySlot = provider.availabilityslots?.sort(
         (a, b) => new Date(b) - new Date(a)
       )[0];
 
@@ -273,13 +306,14 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
               emailArgs: {
                 emailType: "provider-availabilityRemindAddMoreSlots",
                 recipientEmail: provider.email,
+                recipientUserType: "provider",
               },
               inPlatformArgs: {
                 notificationType: "add_more_availability_slots",
                 recipientId: provider.userid,
                 country: poolCountry,
               },
-              language: "en", // TODO: Get the language from the provider
+              language: providerLanguage,
             }),
           },
         }).catch(console.log);
@@ -288,7 +322,10 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
   }
 };
 
-export const generateWeeklyReportJob = async () => {
+export const generateReportJob = async (type) => {
+  if (type !== "week" && type !== "month") {
+    throw new Error("Invalid report type");
+  }
   // Get all the active countries from the database
   const countries = await getAllActiveCountries()
     .then((res) => res.rows)
@@ -299,59 +336,21 @@ export const generateWeeklyReportJob = async () => {
   // Generate weekly report for each country
   for (let i = 0; i < countries.length; i++) {
     const country = countries[i];
+    const countryId = country.country_id;
     const poolCountry = country.alpha2;
 
-    // Gett all providers and generate weekly report
-    const providers = await getAllProvidersQuery({
+    const currencySymbol = await getCurrencyByCountryIdQuery({
       poolCountry,
-    })
-      .then((res) => res.rows)
-      .catch((err) => {
-        console.log("Error in getting all providers", err);
-      });
-
-    for (let i = 0; i < providers.length; i++) {
-      const provider = providers[i];
-
-      // TODO: Generate weekly report for the provider
-
-      const shouldEmail = provider.email && provider.emailnotificationsenabled;
-      console.log("send email to", provider.email);
-      await handleNotificationConsumerMessage({
-        message: {
-          value: JSON.stringify({
-            channels: [shouldEmail ? "email" : "", "in-platform"],
-            emailArgs: {
-              emailType: "provider-reportWeekly",
-              recipientEmail: provider.email,
-            },
-            inPlatformArgs: {
-              notificationType: "weekly_report",
-              recipientId: provider.userid,
-              country: poolCountry,
-            },
-            language: "en", // TODO: Get the language from the provider
-          }),
-        },
-      }).catch(console.log);
-    }
-  }
-};
-
-export const generateMonthlyReportJob = async () => {
-  // Get all the active countries from the database
-  const countries = await getAllActiveCountries()
-    .then((res) => res.rows)
-    .catch((err) => {
-      console.log("Error in getting all active countries", err);
+      countryId,
+    }).then((res) => {
+      if (res.rowCount > 0) {
+        return res.rows[0].symbol;
+      } else {
+        return "";
+      }
     });
 
-  // Generate monthly report for each country
-  for (let i = 0; i < countries.length; i++) {
-    const country = countries[i];
-    const poolCountry = country.alpha2;
-
-    // Gett all providers and generate monthly report for each of them
+    // Gett all providers who have turned on their email notifications and generate weekly report
     const providers = await getAllProvidersQuery({
       poolCountry,
     })
@@ -360,30 +359,134 @@ export const generateMonthlyReportJob = async () => {
         console.log("Error in getting all providers", err);
       });
 
+    // Get all activities/consultations for each provider for the past week
+    const providerIds = Array.from(new Set(providers.map((p) => p.id)));
+    const activitiesData = await getActivitiesQuery({
+      poolCountry,
+      providerIds,
+      type,
+    }).then((res) => {
+      if (res.rowCount > 0) {
+        return res.rows;
+      } else {
+        return [];
+      }
+    });
+
+    // Get all unique client id's
+    const clientIds = Array.from(
+      new Set(activitiesData.map((a) => a.client_detail_id))
+    );
+
+    // Get all client names
+    const clientNames = await getMultipleClientsNamesByIDs({
+      poolCountry,
+      clientDetailIds: clientIds,
+    }).then((res) => {
+      if (res.rowCount > 0) {
+        return res.rows;
+      } else {
+        return [];
+      }
+    });
+
+    // Get all campaign names
+    const campaignNames = await getAllCampaignNamesQuery({
+      poolCountry,
+    }).then((res) => {
+      if (res.rowCount > 0) {
+        return res.rows;
+      } else {
+        return [];
+      }
+    });
+
+    // Create an object in which to keep which activities to which provider belong
+    const providerActivities = {};
+
+    // Attach the activities to the provider they belong to
+    // and find the client and campaign names
+    providerIds.forEach((id) => {
+      const activities = activitiesData
+        .filter((a) => a.provider_detail_id === id)
+        .map((activity) => {
+          const clientNameObj = clientNames.find(
+            (c) => c.client_detail_id === activity.client_detail_id
+          );
+
+          const clientName =
+            clientNameObj.name && clientNameObj.surname
+              ? `${clientNameObj.name} ${clientNameObj.surname}`
+              : clientNameObj.nickname;
+
+          const campaignName = campaignNames.find(
+            (c) => c.campaign_id === activity.campaign_id
+          )?.name;
+
+          return {
+            ...activity,
+            clientName,
+            campaignName,
+          };
+        });
+
+      providerActivities[id] = activities;
+    });
+
     for (let i = 0; i < providers.length; i++) {
       const provider = providers[i];
-
-      // TODO: Generate monthly report for the provider
-
+      const providerLanguage = provider.language;
       const shouldEmail = provider.email && provider.emailnotificationsenabled;
-      console.log("send email to", provider.email);
-      await handleNotificationConsumerMessage({
-        message: {
-          value: JSON.stringify({
-            channels: [shouldEmail ? "email" : "", "in-platform"],
-            emailArgs: {
-              emailType: "provider-reportMonthly",
-              recipientEmail: provider.email,
+
+      // Find the activities for the current provider
+      const currentProviderActivities = providerActivities[provider.id];
+
+      if (currentProviderActivities.length) {
+        // Generate the csv string
+        let csv = `${t("client")},${t("consultation_time")},${t("price")},${t(
+          "campaign"
+        )},${t("scheduled_on")}\n`;
+
+        currentProviderActivities.forEach((activity) => {
+          const date = getReportDate(activity.time);
+          const scheduledOn = getReportDate(activity.created_at);
+          const price = activity.price
+            ? `${activity.price}${currencySymbol}`
+            : t("free");
+
+          const campaign = activity.campaignName || "N/A";
+
+          csv += `${activity.clientName},${date},${price},${campaign},${scheduledOn}\n`;
+        });
+
+        const emailType =
+          type === "week" ? "provider-reportWeekly" : "provider-reportMonthly";
+        const notificationType =
+          type === "month" ? "weekly_report" : "monthly_report";
+        if (provider.email === "georgi@7digit.io") {
+          await handleNotificationConsumerMessage({
+            message: {
+              value: JSON.stringify({
+                channels: [shouldEmail ? "email" : "", "in-platform"],
+                emailArgs: {
+                  emailType,
+                  recipientEmail: provider.email,
+                  recipientUserType: "provider",
+                  data: {
+                    csvData: csv,
+                  },
+                },
+                inPlatformArgs: {
+                  notificationType,
+                  recipientId: provider.userid,
+                  country: poolCountry,
+                },
+                language: providerLanguage,
+              }),
             },
-            inPlatformArgs: {
-              notificationType: "monthly_report",
-              recipientId: provider.userid,
-              country: poolCountry,
-            },
-            language: "en", // TODO: Get the language from the provider
-          }),
-        },
-      }).catch(console.log);
+          }).catch(console.log);
+        }
+      }
     }
   }
 };
