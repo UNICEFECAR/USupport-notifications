@@ -4,12 +4,18 @@ import {
   remindConsultationStartJob,
   remindAddMoreAvailabilitySlotsJob,
   generateReportJob,
+  remindConsultationHasStartedJob,
 } from "#utils/jobs";
 
 export const scheduleJobs = () => {
   // Run every five minutes
   schedule.scheduleJob("*/5 * * * *", async () => {
     await remindConsultationStartJob();
+  });
+
+  // Run every hour
+  schedule.scheduleJob("0 */1 * * *", async () => {
+    await remindConsultationHasStartedJob();
   });
 
   // Run once a day at 23:59 PM

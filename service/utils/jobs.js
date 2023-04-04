@@ -1,5 +1,6 @@
 import {
   getAllConsultationsInRangeQuery,
+  getConsultationsStartingNow,
   updateClientConsultationReminderSentQuery,
   updateProviderConsultationReminderSentQuery,
 } from "#queries/consultations";
@@ -255,6 +256,158 @@ export const remindConsultationStartJob = async () => {
   }
 };
 
+export const remindConsultationHasStartedJob = async () => {
+  const now = new Date().setHours(new Date().getHours(), 0, 0, 0) / 1000;
+
+  // Get all the active countries from the database
+  const countries = await getAllActiveCountries()
+    .then((res) => res.rows)
+    .catch((err) => {
+      console.log("Error in getting all active countries", err);
+    });
+
+  // Remind clients and providers that the consultation has started for each country
+  for (let i = 0; i < countries.length; i++) {
+    const country = countries[i];
+    const poolCountry = country.alpha2;
+
+    // Get all consultations that have started
+    const consultations = await getConsultationsStartingNow({
+      poolCountry,
+      time: now,
+    })
+      .then((res) => {
+        if (res.rowCount === 0) {
+          return [];
+        } else {
+          return res.rows;
+        }
+      })
+      .catch((err) => {
+        console.log(
+          "Error in getting all consultations that have started",
+          err
+        );
+      });
+
+    // Get all the unique client and provider ids
+    const clientIds = Array.from(
+      new Set(consultations.map((x) => x.client_detail_id))
+    );
+    const providerIds = Array.from(
+      new Set(consultations.map((x) => x.provider_detail_id))
+    );
+
+    const clientsDetails = await getClientsDetailsForUpcomingConsultationsQuery(
+      {
+        poolCountry,
+        clientIds,
+      }
+    )
+      .then((res) => res.rows)
+      .catch((err) => {
+        console.log(
+          "Error in getting clients details for consultations that have started",
+          err
+        );
+      });
+
+    const providersDetails =
+      await getProvidersDetailsForUpcomingConsultationsQuery({
+        poolCountry,
+        providerIds,
+      })
+        .then((res) => res.rows)
+        .catch((err) => {
+          console.log(
+            "Error in getting providers details for consultations that have started",
+            err
+          );
+        });
+
+    // For each consultation find the client and provider details and send the notification
+    for (let i = 0; i < consultations.length; i++) {
+      const consultation = consultations[i];
+      const clientDetailId = consultation.client_detail_id;
+      const providerDetailId = consultation.provider_detail_id;
+
+      const currentClientDetails = clientsDetails.find(
+        (client) => client.id === clientDetailId
+      );
+
+      const currentProviderDetails = providersDetails.find(
+        (provider) => provider.id === providerDetailId
+      );
+
+      const providerFullName = currentProviderDetails.provider_patronym
+        ? `${currentProviderDetails.provider_name} ${currentProviderDetails.provider_patronym} ${currentProviderDetails.provider_surname}`
+        : `${currentProviderDetails.provider_name} ${currentProviderDetails.provider_surname}`;
+
+      if (currentClientDetails) {
+        const clientLanguage = currentClientDetails.language;
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: ["email", "in-platform", "push"],
+              emailArgs: {
+                emailType: "client-consultationStart",
+                recipientEmail: currentClientDetails.email,
+                recipientUserType: "client",
+              },
+              inPlatformArgs: {
+                notificationType: "consultation_started",
+                recipientId: currentClientDetails.userid,
+                country: poolCountry,
+                data: {
+                  provider_detail_id: consultation.provider_detail_id,
+                  time: consultation.time,
+                  consultation_id: consultation.id,
+                },
+              },
+              pushArgs: {
+                notificationType: "consultation_started",
+                pushTokensArray: currentClientDetails.push_notification_tokens,
+                country: poolCountry,
+                data: {
+                  providerName: providerFullName,
+                },
+              },
+              language: clientLanguage,
+            }),
+          },
+        }).catch(console.log);
+      }
+
+      if (currentProviderDetails) {
+        const providerLanguage = currentProviderDetails.language;
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: ["email", "in-platform"],
+              emailArgs: {
+                emailType: "provider-consultationStart",
+                recipientEmail: currentProviderDetails.email,
+                recipientUserType: "provider",
+              },
+              inPlatformArgs: {
+                notificationType: "consultation_started",
+                recipientId: currentProviderDetails.userid,
+                country: poolCountry,
+                data: {
+                  client_detail_id: consultation.client_detail_id,
+                  time: consultation.time,
+                  consultation_id: consultation.id,
+                },
+              },
+              language: providerLanguage,
+            }),
+          },
+        }).catch(console.log);
+      }
+    }
+  }
+};
+
 export const remindAddMoreAvailabilitySlotsJob = async () => {
   // Get all the active countries from the database
   const countries = await getAllActiveCountries()
@@ -463,29 +616,27 @@ export const generateReportJob = async (type) => {
           type === "week" ? "provider-reportWeekly" : "provider-reportMonthly";
         const notificationType =
           type === "month" ? "weekly_report" : "monthly_report";
-        if (provider.email === "georgi@7digit.io") {
-          await handleNotificationConsumerMessage({
-            message: {
-              value: JSON.stringify({
-                channels: [shouldEmail ? "email" : "", "in-platform"],
-                emailArgs: {
-                  emailType,
-                  recipientEmail: provider.email,
-                  recipientUserType: "provider",
-                  data: {
-                    csvData: csv,
-                  },
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: [shouldEmail ? "email" : "", "in-platform"],
+              emailArgs: {
+                emailType,
+                recipientEmail: provider.email,
+                recipientUserType: "provider",
+                data: {
+                  csvData: csv,
                 },
-                inPlatformArgs: {
-                  notificationType,
-                  recipientId: provider.userid,
-                  country: poolCountry,
-                },
-                language: providerLanguage,
-              }),
-            },
-          }).catch(console.log);
-        }
+              },
+              inPlatformArgs: {
+                notificationType,
+                recipientId: provider.userid,
+                country: poolCountry,
+              },
+              language: providerLanguage,
+            }),
+          },
+        }).catch(console.log);
       }
     }
   }

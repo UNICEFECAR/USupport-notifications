@@ -26,4 +26,6 @@ export default {
   campaign: "Науқан",
   free: "Бос",
   schedule: "Schedule on",
+  consultation_started: "Consultation startedKK",
+  consultation_started_message: "Your consultation with provider {1} startedKK",
 };

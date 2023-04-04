@@ -26,4 +26,6 @@ export default {
   campaign: "Кампания",
   free: "Свободно",
   schedule: "Schedule on",
+  consultation_started: "Consultation startedRU",
+  consultation_started_message: "Your consultation with provider {1} startedRU",
 };

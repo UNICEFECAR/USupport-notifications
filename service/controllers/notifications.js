@@ -137,6 +137,12 @@ export const raisePushNotification = async ({
         data.minToConsultation,
       ]);
       break;
+    case "consultation_started":
+      notificationTitle = t("consultation_started");
+      notificationMessage = t("consultation_started_message", language, [
+        data.providerName,
+      ]);
+      break;
     default:
       break;
   }
