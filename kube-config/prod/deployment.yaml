@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: notifications
-        image: 482053628475.dkr.ecr.eu-central-1.amazonaws.com/usupport-notifications-api
+        image: 482053628475.dkr.ecr.eu-central-1.amazonaws.com/usupport-notifications-api:latest
         imagePullPolicy: Always
         envFrom:
         - secretRef:
