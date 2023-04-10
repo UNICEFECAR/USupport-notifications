@@ -3,14 +3,19 @@ import schedule from "node-schedule";
 import {
   remindConsultationStartJob,
   remindAddMoreAvailabilitySlotsJob,
-  generateWeeklyReportJob,
-  generateMonthlyReportJob,
+  generateReportJob,
+  remindConsultationHasStartedJob,
 } from "#utils/jobs";
 
 export const scheduleJobs = () => {
   // Run every five minutes
   schedule.scheduleJob("*/5 * * * *", async () => {
     await remindConsultationStartJob();
+  });
+
+  // Run every hour
+  schedule.scheduleJob("0 */1 * * *", async () => {
+    await remindConsultationHasStartedJob();
   });
 
   // Run once a day at 23:59 PM
@@ -20,11 +25,11 @@ export const scheduleJobs = () => {
 
   // Run every Sunday at 23:59 PM
   schedule.scheduleJob("59 23 * * 0", async () => {
-    await generateWeeklyReportJob();
+    await generateReportJob("week");
   });
 
   // Run every last day of the month at 23:59 PM
   schedule.scheduleJob("59 23 L * *", async () => {
-    await generateMonthlyReportJob();
+    await generateReportJob("month");
   });
 };

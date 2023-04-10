@@ -37,3 +37,14 @@ export const updateProviderConsultationReminderSentQuery = async ({
         `,
     [consultationId]
   );
+
+export const getConsultationsStartingNow = async ({ poolCountry, time }) => {
+  return await getDBPool("clinicalDb", poolCountry).query(
+    `
+        SELECT client_detail_id, provider_detail_id, consultation_id, time
+        FROM consultation
+        WHERE consultation.time = to_timestamp($1) AND (status = 'scheduled' OR status = 'finished')
+      `,
+    [time]
+  );
+};
