@@ -97,7 +97,10 @@ export const remindConsultationStartJob = async () => {
         clientIds,
       }
     )
-      .then((res) => res.rows)
+      .then((res) => {
+        if (res.rowCount === 0) return [];
+        return res.rows;
+      })
       .catch((err) => {
         console.log("Error in reminding for upcoming consultations", err);
       });
@@ -107,7 +110,10 @@ export const remindConsultationStartJob = async () => {
         poolCountry,
         providerIds,
       })
-        .then((res) => res.rows)
+        .then((res) => {
+          if (res.rowCount === 0) return [];
+          return res.rows;
+        })
         .catch((err) => {
           console.log("Error in reminding for upcoming consultations", err);
         });
@@ -304,7 +310,10 @@ export const remindConsultationHasStartedJob = async () => {
         clientIds,
       }
     )
-      .then((res) => res.rows)
+      .then((res) => {
+        if (res.rowCount === 0) return [];
+        return res.rows;
+      })
       .catch((err) => {
         console.log(
           "Error in getting clients details for consultations that have started",
@@ -317,7 +326,10 @@ export const remindConsultationHasStartedJob = async () => {
         poolCountry,
         providerIds,
       })
-        .then((res) => res.rows)
+        .then((res) => {
+          if (res.rowCount === 0) return [];
+          return res.rows;
+        })
         .catch((err) => {
           console.log(
             "Error in getting providers details for consultations that have started",
@@ -426,7 +438,10 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
       await getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery({
         poolCountry,
       })
-        .then((res) => res.rows)
+        .then((res) => {
+          if (res.rowCount === 0) return [];
+          return res.rows;
+        })
         .catch((err) => {
           console.log(
             "Error in getting all providers with availability slots",
@@ -507,7 +522,10 @@ export const generateReportJob = async (type) => {
     const providers = await getAllProvidersQuery({
       poolCountry,
     })
-      .then((res) => res.rows)
+      .then((res) => {
+        if (res.rowCount === 0) return [];
+        return res.rows;
+      })
       .catch((err) => {
         console.log("Error in getting all providers", err);
       });
