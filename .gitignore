@@ -38,3 +38,6 @@ api/logs/*
 
 # Kubernetes secrets
 secrets.yaml
+
+# Firebase secrets
+firebase-adminsdk.json

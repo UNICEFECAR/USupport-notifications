@@ -7,4 +7,5 @@ data:
   PORT: "3005"
 
   KAFKAJS_NO_PARTITIONER_WARNING: "1"
-  
+
+  GOOGLE_APPLICATION_CREDENTIALS: "./firebase-adminsdk.json"
