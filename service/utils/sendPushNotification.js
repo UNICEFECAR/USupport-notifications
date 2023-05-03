@@ -23,10 +23,6 @@ export const sendPushNotification = ({ pushTokensArray, title, body }) => {
       tokens: chunk,
     };
 
-    getMessaging()
-      .sendMulticast(message)
-      .then((batchResponse) => {
-        console.log(batchResponse, "batchResponse");
-      });
+    getMessaging().sendMulticast(message);
   }
 };
