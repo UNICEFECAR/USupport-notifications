@@ -61,7 +61,10 @@ export const remindConsultationStartJob = async () => {
     const consultations = await getAllConsultationsInRangeQuery({
       poolCountry,
     })
-      .then((res) => res.rows)
+      .then((res) => {
+        if (res.rowCount === 0) return [];
+        return res.rows;
+      })
       .catch((err) => {
         console.log(
           "Error in getting all consultations in next two hours",
