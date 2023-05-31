@@ -16,3 +16,8 @@ export const getHasUnreadNotificationsByUserIdSchema = yup.object().shape({
   country: yup.string().required(),
   userId: yup.string().uuid().required(),
 });
+
+export const readAllNotificationsByUserIdSchema = yup.object().shape({
+  country: yup.string().required(),
+  userId: yup.string().uuid().required(),
+});

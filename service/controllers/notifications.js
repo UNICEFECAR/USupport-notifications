@@ -2,6 +2,7 @@ import {
   addNotificationQuery,
   getNotificationsByUserIdQuery,
   getUnreadNotificationsByUserIdQuery,
+  readAllNotificationsByUserIdQuery,
   updateNotificationIsReadQuery,
 } from "#queries/notifications";
 
@@ -154,4 +155,21 @@ export const raisePushNotification = async ({
     navigationData,
     clientDetailId: data.clientDetailId,
   });
+};
+
+export const readAllNotificationsByUserId = async ({ country, userId }) => {
+  return await readAllNotificationsByUserIdQuery({
+    poolCountry: country,
+    userId,
+  })
+    .then((res) => {
+      if (res.rowCount === 0) {
+        return { success: true };
+      } else {
+        return res.rows[0];
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
 };

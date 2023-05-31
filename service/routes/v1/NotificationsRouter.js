@@ -6,12 +6,14 @@ import {
   getNotificationsByUserId,
   updateNotificationIsRead,
   getHasUnreadNotificationsByUserId,
+  readAllNotificationsByUserId,
 } from "#controllers/notifications";
 
 import {
   getNotificationsByUserIdSchema,
   updateNotificationIsReadSchema,
   getHasUnreadNotificationsByUserIdSchema,
+  readAllNotificationsByUserIdSchema,
 } from "#schemas/notificationsSchemas";
 
 const router = express.Router();
@@ -72,6 +74,26 @@ router.put("/is-read", async (req, res, next) => {
       ...payload,
     })
     .then(updateNotificationIsRead)
+    .then((result) => res.status(200).send(result))
+    .catch(next);
+});
+
+router.put("/read-all", populateUser, async (req, res, next) => {
+  /**
+   * #route   PUT /notifications/v1/read-all
+   * #desc    Update the read status of all notifications for the current user
+   */
+  const country = req.header("x-country-alpha-2");
+  const userId = req.user.user_id;
+
+  return await readAllNotificationsByUserIdSchema
+    .noUnknown(true)
+    .strict()
+    .validate({
+      country,
+      userId,
+    })
+    .then(readAllNotificationsByUserId)
     .then((result) => res.status(200).send(result))
     .catch(next);
 });

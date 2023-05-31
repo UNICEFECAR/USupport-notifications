@@ -54,3 +54,18 @@ export const updateNotificationIsReadQuery = async ({
     `,
     [notificationIds]
   );
+
+export const readAllNotificationsByUserIdQuery = async ({
+  poolCountry,
+  userId,
+}) => {
+  return await getDBPool("clinicalDb", poolCountry).query(
+    `
+        UPDATE notification
+        SET is_read = true
+        WHERE user_id = $1 AND is_read = false
+        RETURNING *;
+      `,
+    [userId]
+  );
+};
