@@ -139,10 +139,29 @@ export const remindConsultationStartJob = async () => {
         const timeDiff = consultationTime - now;
         const timeDiffMin = Math.round(timeDiff / 60000);
 
-        const providerDetails =
-          providersDetails.find(
-            (x) => x.id === clientConsultation.provider_detail_id
-          ) || {};
+        let providerDetails = providersDetails.find(
+          (x) => x.id === clientConsultation.provider_detail_id
+        );
+        if (!providerDetails) {
+          providerDetails =
+            await getProvidersDetailsForUpcomingConsultationsQuery({
+              providerIds: [clientConsultation.provider_detail_id],
+              poolCountry,
+            })
+              .then((res) => {
+                if (res.rowCount === 0) {
+                  console.log(
+                    "Error in fetching provider details for consultation reminder",
+                    clientConsultation.id
+                  );
+                  return {};
+                }
+                return res.rows[0];
+              })
+              .catch((err) => {
+                throw err;
+              });
+        }
 
         const {
           provider_name: providerName,
@@ -619,7 +638,7 @@ export const generateReportJob = async (type) => {
         // Generate the csv string
         let csv = `${t("client")},${t("consultation_time")},${t("price")},${t(
           "campaign"
-        )},${t("scheduled_on")}\n`;
+        )},${t("schedule")}\n`;
 
         currentProviderActivities.forEach((activity) => {
           const date = getReportDate(activity.time);
