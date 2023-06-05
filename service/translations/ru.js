@@ -1,31 +1,32 @@
 export default {
   notification_not_found_error: "Уведомление не найдено",
-  consultation_booking: "New consultation booked",
+  consultation_booking: "Забронирована новая консультация",
   consultation_booking_message:
-    "Your consultation with provider {1} was scheduled successfully",
-  consultation_suggestion: "New consultation suggestion",
+    "Ваша консультация с консультантом {1} была успешно запланирована",
+  consultation_suggestion: "Новое предложение консультации",
   consultation_suggestion_message:
-    "You have a new consultation suggestion from provider {1}",
-  consultation_cancellation: "Consultation cancelled",
+    "У Вас есть новое предложение консультации от консультанта {1}",
+  consultation_cancellation: "Консультация отменена",
   consultation_cancellation_message:
-    "You successfully canceled the consultation with provider {1}",
+    "Вы успешно отменили консультацию с консультантом {1}",
   consultation_cancellation_by_provider_message:
-    "provider {1} canceled your upcoming consultation",
-  consultation_suggestion_booking: "Consultation suggestion accepted",
+    "консультант {1} отменил Вашу предстоящую консультацию",
+  consultation_suggestion_booking: "Предложение о консультации принято",
   consultation_suggestion_booking_message:
-    "You accepted the consultation suggested by provider {1}",
-  consultation_reschedule: "Consultation rescheduled",
+    "Вы согласились на консультацию, предложенную консультантом {1}",
+  consultation_reschedule: "Консультация перенесена",
   consultation_reschedule_message:
-    "Your consultation with provider {1} was rescheduled",
+    "Ваша консультация с консультантом {1} была перенесена",
   consultation_reminder: "Напоминание о консультации",
   consultation_reminder_message:
-    "Your consultation with provider {1} starts in {2} minutes",
+    "Ваша консультация с консультантом {1} начнется через {2} минут",
   client: "Клиент",
   price: "Цена",
-  consultation_time: "Consultation time",
+  consultation_time: "Время консультации",
   campaign: "Кампания",
   free: "Свободно",
-  schedule: "Schedule on",
-  consultation_started: "Consultation startedRU",
-  consultation_started_message: "Your consultation with provider {1} startedRU",
+  schedule: "Запланирована на ДАТА",
+  consultation_started: "Консультация началась",
+  consultation_started_message:
+    "Ваша консультация с консультантом {1} началась",
 };

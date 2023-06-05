@@ -1,31 +1,31 @@
 export default {
   notification_not_found_error: "Хабарландыру табылмады",
-  consultation_booking: "New consultation booked",
+  consultation_booking: "Жаңа консультация жазылды",
   consultation_booking_message:
-    "Your consultation with provider {1} was scheduled successfully",
-  consultation_suggestion: "New consultation suggestion",
+    "{1} консультантпен консультацияңыз сәтті жоспарланған",
+  consultation_suggestion: "Жаңа консультация ұсынысы",
   consultation_suggestion_message:
-    "You have a new consultation suggestion from provider {1}",
-  consultation_cancellation: "Consultation cancelled",
+    "Сізде консультант {1} ұсынған жаңа консультация бар",
+  consultation_cancellation: "Консультация алынып тасталды",
   consultation_cancellation_message:
-    "You successfully canceled the consultation with provider {1}",
+    "Сіз {1} консультантпен консультациядан сәтті бас тарттыңыз",
   consultation_cancellation_by_provider_message:
-    "provider {1} canceled your upcoming consultation",
-  consultation_suggestion_booking: "Consultation suggestion accepted",
+    "консультант {1} алдағы консультациядан бас тартты",
+  consultation_suggestion_booking: "Консультация ұсынысы қабылданды",
   consultation_suggestion_booking_message:
-    "You accepted the consultation suggested by provider {1}",
-  consultation_reschedule: "Consultation rescheduled",
+    "Сіз {1} консультанті ұсынған консультацияға келістіңіз",
+  consultation_reschedule: "Консультация ауыстырылды",
   consultation_reschedule_message:
-    "Your consultation with provider {1} was rescheduled",
+    "Сіздің консультант {1} уақытыңыз ауыстырылды",
   consultation_reminder: "Консультация туралы еске салу",
   consultation_reminder_message:
-    "Your consultation with provider {1} starts in {2} minutes",
+    "{1} консультантімен консультацияңыз {2} минуттан кейін басталады",
   client: "Клиент",
   price: "Бағасы",
-  consultation_time: "Consultation time",
+  consultation_time: "Консультация уақыты",
   campaign: "Науқан",
   free: "Бос",
-  schedule: "Schedule on",
-  consultation_started: "Consultation startedKK",
-  consultation_started_message: "Your consultation with provider {1} startedKK",
+  schedule: "Жоспарланды",
+  consultation_started: "Консультация басталды",
+  consultation_started_message: "{1} консультантпен консультацияңыз басталды",
 };
