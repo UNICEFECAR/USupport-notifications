@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "prod": "node server.js"
+    "prod": "node server.js",
+    "lint": "eslint . --ext .js,.jsx"
   },
   "license": "GPL-3.0",
   "dependencies": {
@@ -21,11 +22,15 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "eslint": "^8.23.1",
+    "eslint": "^8.48.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "nodemon": "^2.0.20",
-    "prettier": "^2.7.1"
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-n": "^16.0.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "nodemon": "^2.0.20"
   },
   "imports": {
     "#routes/*": "./routes/*.js",

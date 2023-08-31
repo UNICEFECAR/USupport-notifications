@@ -88,7 +88,6 @@ export const updateNotificationIsRead = async ({
 
 export const raisePushNotification = async ({
   notificationType,
-  country,
   language,
   pushTokensArray,
   data,
