@@ -95,19 +95,19 @@ export const raisePushNotification = async ({
   let notificationTitle, notificationMessage, navigationData;
   switch (notificationType) {
     case "consultation_booking":
-      notificationTitle = t("consultation_booking");
+      notificationTitle = t("consultation_booking", language);
       notificationMessage = t("consultation_booking_message", language, [
         data.providerName,
       ]);
       break;
     case "consultation_suggestion":
-      notificationTitle = t("consultation_suggestion");
+      notificationTitle = t("consultation_suggestion", language);
       notificationMessage = t("consultation_suggestion_message", language, [
         data.providerName,
       ]);
       break;
     case "consultation_cancellation":
-      notificationTitle = t("consultation_cancellation");
+      notificationTitle = t("consultation_cancellation", language);
       notificationMessage = t(
         data.canceledBy === "client"
           ? "consultation_cancellation_message"
@@ -117,7 +117,7 @@ export const raisePushNotification = async ({
       );
       break;
     case "consultation_suggestion_booking":
-      notificationTitle = t("consultation_suggestion_booking");
+      notificationTitle = t("consultation_suggestion_booking", language);
       notificationMessage = t(
         "consultation_suggestion_booking_message",
         language,
@@ -125,20 +125,20 @@ export const raisePushNotification = async ({
       );
       break;
     case "consultation_reschedule":
-      notificationTitle = t("consultation_reschedule");
+      notificationTitle = t("consultation_reschedule", language);
       notificationMessage = t("consultation_reschedule_message", language, [
         data.providerName,
       ]);
       break;
     case "consultation_remind_start":
-      notificationTitle = t("consultation_reminder");
+      notificationTitle = t("consultation_reminder", language);
       notificationMessage = t("consultation_reminder_message", language, [
         data.providerName,
         data.minToConsultation,
       ]);
       break;
     case "consultation_started":
-      notificationTitle = t("consultation_started");
+      notificationTitle = t("consultation_started", language);
       notificationMessage = t("consultation_started_message", language, [
         data.providerName,
       ]);
