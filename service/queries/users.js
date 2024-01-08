@@ -19,11 +19,23 @@ export const getClientsDetailsForUpcomingConsultationsQuery = async ({
 }) =>
   await getDBPool("piiDb", poolCountry).query(
     `
-      SELECT "user".user_id as userId, "client_detail".client_detail_id as id, "client_detail".email as email, "notification_preference".email as emailNotificationsEnabled, "notification_preference".consultation_reminder_min as consultationReminderMin, "client_detail".push_notification_tokens, "user".language
-      FROM "user"
+      SELECT 
+        "user".user_id AS userId, 
+        "client_detail".client_detail_id AS id, 
+        "client_detail".email AS email, 
+        "notification_preference".email AS emailNotificationsEnabled, 
+        "notification_preference".consultation_reminder_min[1] AS consultationReminderMin, 
+        "client_detail".push_notification_tokens, 
+        "user".language
+      FROM 
+        "user"
         INNER JOIN "client_detail" ON "user".client_detail_id = "client_detail".client_detail_id
         INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id
-      WHERE "user".deleted_at is NULL AND "user".deleted_at is NULL AND "user".client_detail_id = ANY($1::UUID[]) AND "notification_preference".consultation_reminder = true
+      WHERE 
+          "user".deleted_at IS NULL 
+          AND "user".client_detail_id = ANY($1::UUID[]) 
+          AND "notification_preference".consultation_reminder = true;
+
     `,
     [clientIds]
   );

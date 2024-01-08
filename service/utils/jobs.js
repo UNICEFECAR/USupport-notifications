@@ -226,7 +226,9 @@ export const remindConsultationStartJob = async () => {
     for (let i = 0; i < providersDetails.length; i++) {
       const provider = providersDetails[i];
       const providerLanguage = provider.language;
-      const reminderMin = provider.consultationremindermin;
+      const reminderMinArr = provider.consultationremindermin.sort(
+        (a, b) => b - a
+      );
 
       const providerConsultation = consultations.find(
         (consultation) =>
@@ -240,7 +242,9 @@ export const remindConsultationStartJob = async () => {
         const timeDiff = consultationTime - now;
         const timeDiffMin = Math.round(timeDiff / 60000);
 
-        if (timeDiffMin <= reminderMin) {
+        const reminderMin = reminderMinArr.find((x) => x <= timeDiffMin);
+
+        if (timeDiffMin <= reminderMin && reminderMin - timeDiffMin <= 4) {
           const shouldEmail =
             provider.email && provider.emailnotificationsenabled;
 
@@ -272,12 +276,18 @@ export const remindConsultationStartJob = async () => {
             },
           }).catch(console.log);
 
-          await updateProviderConsultationReminderSentQuery({
-            poolCountry,
-            consultationId: providerConsultation.id,
-          }).catch((err) => {
-            console.log("Error in updating provider consultation", err);
-          });
+          const hasSmallerReminder = reminderMinArr.some(
+            (x) => x < reminderMin
+          );
+
+          if (!hasSmallerReminder) {
+            await updateProviderConsultationReminderSentQuery({
+              poolCountry,
+              consultationId: providerConsultation.id,
+            }).catch((err) => {
+              console.log("Error in updating provider consultation", err);
+            });
+          }
         }
       }
     }
