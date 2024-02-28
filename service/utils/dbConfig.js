@@ -24,6 +24,10 @@ export const getDBPool = (dbType, country) => {
         if (dbType === "piiDb") return PII_PG_POOL_KZ;
         else if (dbType === "clinicalDb") return CLINICAL_PG_POOL_KZ;
         else throw Error("DB Type not recognized");
+      case "PL":
+        if (dbType === "piiDb") return PII_PG_POOL_KZ;
+        else if (dbType === "clinicalDb") return CLINICAL_PG_POOL_KZ;
+        else throw Error("DB Type not recognized");
       default:
         throw Error("DB Country not recognized");
     }
