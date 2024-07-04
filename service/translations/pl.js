@@ -6,7 +6,7 @@ export default {
   consultation_suggestion: "Nowa sugestia konsultacji",
   consultation_suggestion_message:
     "Masz nową sugestię konsultacji od dostawcy {1}",
-  consultation_cancellation: "Konsultacje anulowane",
+  consultation_cancellation: "Konsultacja anulowana",
   consultation_cancellation_message:
     "Pomyślnie anulowałeś konsultację z dostawcą {1}",
   consultation_cancellation_by_provider_message:
@@ -17,9 +17,9 @@ export default {
   consultation_reschedule: "Konsultacja przełożona",
   consultation_reschedule_message:
     "Konsultacja z dostawcą {1} została przełożona.",
-  consultation_reminder: "Przypomnienie o konsultacjach",
+  consultation_reminder: "Przypomnienie o konsultacji",
   consultation_reminder_message:
-    "Twoja konsultacja z dostawcą {1} rozpocznie się za {2} minut",
+    "Twoja konsultacja z konsultantką/konsultantem {1} rozpocznie się za {2} minut",
   client: "Klient",
   price: "Cena",
   consultation_time: "Czas konsultacji",
@@ -28,5 +28,5 @@ export default {
   schedule: "Zaplanowane na",
   consultation_started: "Konsultacja rozpoczęla się",
   consultation_started_message:
-    "Rozpoczęła się Twoja konsultacja z dostawcą {1} ",
+    "Rozpoczęła się Twoja konsultacja z konsultantką/konsultantem {1}",
 };
