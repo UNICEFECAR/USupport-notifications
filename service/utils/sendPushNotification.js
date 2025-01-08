@@ -10,9 +10,12 @@ initializeApp({
  *
  * @param {*} data
  */
-export const sendPushNotification = ({ pushTokensArray, title, body }) => {
+export const sendPushNotification = async ({
+  pushTokensArray,
+  title,
+  body,
+}) => {
   if (!Array.isArray(pushTokensArray)) return;
-
   const chunks = chunkArray(pushTokensArray, 500);
   for (const chunk of chunks) {
     const message = {
@@ -23,6 +26,7 @@ export const sendPushNotification = ({ pushTokensArray, title, body }) => {
       tokens: chunk,
     };
 
-    getMessaging().sendMulticast(message);
+    // Returns res object with responses array, which have error property
+    await getMessaging().sendEachForMulticast(message);
   }
 };
