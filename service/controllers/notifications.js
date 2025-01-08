@@ -143,6 +143,18 @@ export const raisePushNotification = async ({
         data.providerName,
       ]);
       break;
+    case "question_answered":
+      notificationTitle = t("question_answered", language);
+      notificationMessage = t("question_answered_message", language, [
+        data.providerName,
+      ]);
+      navigationData = {
+        screen: "MyQADetails",
+        params: {
+          questionId: data.questionId,
+        },
+      };
+      break;
     default:
       break;
   }

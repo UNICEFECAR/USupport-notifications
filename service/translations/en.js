@@ -28,4 +28,6 @@ export default {
   schedule: "Schedule on",
   consultation_started: "Consultation started",
   consultation_started_message: "Your consultation with provider {1} started",
+  question_answered: "Question answered",
+  question_answered_message: "Your question was answered by provider {1}",
 };
