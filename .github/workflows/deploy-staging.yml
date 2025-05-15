@@ -52,6 +52,8 @@ jobs:
             echo "  CLINICAL_DB_URL_KZ: '${{ secrets.CLINICAL_DB_URL_KZ }}'"
             echo "  PII_DB_URL_PL: '${{ secrets.PII_DB_URL_PL }}'"
             echo "  CLINICAL_DB_URL_PL: '${{ secrets.CLINICAL_DB_URL_PL }}'"
+            echo "  PII_DB_URL_RO: '${{ secrets.PII_DB_URL_RO }}'"
+            echo "  CLINICAL_DB_URL_RO: '${{ secrets.CLINICAL_DB_URL_RO }}'"
             echo "  MASTER_DB_URL: '${{ secrets.MASTER_DB_URL }}'"
           } > kube-config/staging/secrets.yaml
 
