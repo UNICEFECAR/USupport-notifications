@@ -55,6 +55,11 @@ jobs:
             echo "  PII_DB_URL_RO: '${{ secrets.PII_DB_URL_RO }}'"
             echo "  CLINICAL_DB_URL_RO: '${{ secrets.CLINICAL_DB_URL_RO }}'"
             echo "  MASTER_DB_URL: '${{ secrets.MASTER_DB_URL }}'"
+            echo "  FIREBASE_PRIVATE_KEY_ID: '${{ secrets.FIREBASE_PRIVATE_KEY_ID }}'"
+            echo "  FIREBASE_PRIVATE_KEY: '${{ secrets.FIREBASE_PRIVATE_KEY }}'"
+            echo "  FIREBASE_CLIENT_EMAIL: '${{ secrets.FIREBASE_CLIENT_EMAIL }}'"
+            echo "  FIREBASE_CLIENT_ID: '${{ secrets.FIREBASE_CLIENT_ID }}'"
+            echo "  FIREBASE_CLIENT_X509_CERT_URL: '${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}'"
           } > kube-config/prod/secrets.yaml
 
       - name: Deploy to Kubernetes
