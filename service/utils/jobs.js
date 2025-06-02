@@ -314,6 +314,7 @@ export const remindConsultationHasStartedJob = async () => {
   for (let i = 0; i < countries.length; i++) {
     const country = countries[i];
     const poolCountry = country.alpha2;
+    const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
     // Get all consultations that have started
     const consultations = await getConsultationsStartingNow({
@@ -403,6 +404,9 @@ export const remindConsultationHasStartedJob = async () => {
                 emailType: "client-consultationStart",
                 recipientEmail: currentClientDetails.email,
                 recipientUserType: "client",
+                data: {
+                  countryLabel,
+                },
               },
               inPlatformArgs: {
                 notificationType: "consultation_started",
@@ -438,6 +442,9 @@ export const remindConsultationHasStartedJob = async () => {
                 emailType: "provider-consultationStart",
                 recipientEmail: currentProviderDetails.email,
                 recipientUserType: "provider",
+                data: {
+                  countryLabel,
+                },
               },
               inPlatformArgs: {
                 notificationType: "consultation_started",
