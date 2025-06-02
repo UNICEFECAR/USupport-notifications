@@ -56,3 +56,13 @@ export function chunkArray(arr, chunkSize) {
   }
   return chunks;
 }
+
+const countriesMap = {
+  kz: "kazakhstan",
+  pl: "poland",
+  ro: "romania",
+};
+
+export const getCountryLabelFromAlpha2 = (alpha2) => {
+  return countriesMap[alpha2.toLocaleLowerCase()];
+};
