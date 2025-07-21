@@ -32,6 +32,14 @@ const CLINICAL_PG_POOL_RO = new pg.Pool({
   connectionString: process.env.CLINICAL_DB_URL_RO,
 });
 
+// AM Database connection strings
+const PII_PG_POOL_AM = new pg.Pool({
+  connectionString: process.env.PII_DB_URL_AM,
+});
+const CLINICAL_PG_POOL_AM = new pg.Pool({
+  connectionString: process.env.CLINICAL_DB_URL_AM,
+});
+
 const IS_DEV = process.env.NODE_ENV === "development";
 
 export const getDBPool = (dbType, country) => {
@@ -54,6 +62,10 @@ export const getDBPool = (dbType, country) => {
       case "RO":
         if (dbType === "piiDb") return PII_PG_POOL_RO;
         else if (dbType === "clinicalDb") return CLINICAL_PG_POOL_RO;
+        else throw Error("DB Type not recognized");
+      case "AM":
+        if (dbType === "piiDb") return PII_PG_POOL_AM;
+        else if (dbType === "clinicalDb") return CLINICAL_PG_POOL_AM;
         else throw Error("DB Type not recognized");
       default:
         throw Error("DB Country not recognized");
