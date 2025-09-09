@@ -1,32 +1,32 @@
 export default {
   notification_not_found_error: "Nie znaleziono powiadomienia",
-  consultation_booking: "Zarezerwowano nowe konsultacje",
+  consultation_booking: "Zarezerwowano nową konsultację",
   consultation_booking_message:
-    "Konsultacja z dostawcą {1} została zaplanowana pomyślnie",
+    "Konsultacja ze specjalistą/ką {1} została zaplanowana pomyślnie",
   consultation_suggestion: "Nowa sugestia konsultacji",
   consultation_suggestion_message:
-    "Masz nową sugestię konsultacji od specjalisty {1}",
+    "Masz nową sugestię konsultacji od specjalisty/ki {1}",
   consultation_cancellation: "Konsultacja anulowana",
   consultation_cancellation_message:
-    "Pomyślnie anulowałeś konsultację z dostawcą {1}",
+    "Pomyślnie anulowałeś konsultację ze specjalistą/ką {1}",
   consultation_cancellation_by_provider_message:
-    "konsultant {1} anulował nadchodzącą konsultację",
+    "konsultant/ka {1} anulował/a nadchodzącą konsultację",
   consultation_suggestion_booking: "Przyjęto sugestię konsultacji",
   consultation_suggestion_booking_message:
-    "Zaakceptowałeś konsultację sugerowaną przez konsultanta {1}",
+    "Zaakceptowałeś/aś konsultację sugerowaną przez specjalistę/kę {1}",
   consultation_reschedule: "Konsultacja przełożona",
   consultation_reschedule_message:
-    "Konsultacja z dostawcą {1} została przełożona.",
+    "Konsultacja ze specjalistą/ką {1} została przełożona.",
   consultation_reminder: "Przypomnienie o konsultacji",
   consultation_reminder_message:
-    "Twoja konsultacja ze specjalistą {1} rozpocznie się za {2} minut",
-  client: "Klient",
+    "Twoja konsultacja ze specjalistą/ką {1} rozpocznie się za {2} minut",
+  client: "Klient/ka",
   price: "Cena",
   consultation_time: "Czas konsultacji",
   campaign: "Kampania",
-  free: "Wolny",
+  free: "Bezpłatnie",
   schedule: "Zaplanowane na",
   consultation_started: "Konsultacja rozpoczęła się",
   consultation_started_message:
-    "Rozpoczęła się Twoja konsultacja ze specjalistą {1}",
+    "Rozpoczęła się Twoja konsultacja ze specjalistą/ką {1}",
 };
