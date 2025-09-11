@@ -18,7 +18,7 @@
   "consultation_time": "Խորհրդատվության ժամանակը",
   "campaign": "Արշավը",
   "free": "Անվճար",
-  "scheduled": "Պլանավորված է ամսի -ին",
+  "schedule": "Պլանավորված է ամսի -ին",
   "consultation_started": "Խորհրդատվությունն սկսված է",
   "consultation_started_message": "Խորհրդատուի{1} հետ ձեր խորհրդատվությունն սկսված է։",
   "question_answered": "Question answered",
