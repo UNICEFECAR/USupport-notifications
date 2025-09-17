@@ -53,6 +53,7 @@ export const remindConsultationStartJob = async () => {
     .then((res) => res.rows)
     .catch((err) => {
       console.log("Error in getting all active countries", err);
+      return [];
     });
 
   // Remind all clients and providers of upcoming consultations for each country
@@ -74,6 +75,7 @@ export const remindConsultationStartJob = async () => {
           "Error in getting all consultations in next two hours",
           err
         );
+        return [];
       });
 
     // Get all users details for upcoming consultations, excluding those who have already been reminded
@@ -110,6 +112,7 @@ export const remindConsultationStartJob = async () => {
       })
       .catch((err) => {
         console.log("Error in reminding for upcoming consultations", err);
+        return [];
       });
 
     const providersDetails =
@@ -123,6 +126,7 @@ export const remindConsultationStartJob = async () => {
         })
         .catch((err) => {
           console.log("Error in reminding for upcoming consultations", err);
+          return [];
         });
 
     // For each client and provider, send a reminder email and update the database to reflect that the reminder has been sent for that consultation
@@ -280,7 +284,9 @@ export const remindConsultationStartJob = async () => {
                 language: providerLanguage,
               }),
             },
-          }).catch(console.log);
+          }).catch((err) => {
+            console.log("Error in sending provider consultation reminder", err);
+          });
 
           const hasSmallerReminder = reminderMinArr.some(
             (x) => x < reminderMin
@@ -308,10 +314,11 @@ export const remindConsultationHasStartedJob = async () => {
     .then((res) => res.rows)
     .catch((err) => {
       console.log("Error in getting all active countries", err);
+      return [];
     });
 
   // Remind clients and providers that the consultation has started for each country
-  for (let i = 0; i < countries.length; i++) {
+  for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
@@ -333,6 +340,7 @@ export const remindConsultationHasStartedJob = async () => {
           "Error in getting all consultations that have started",
           err
         );
+        return [];
       });
 
     // Get all the unique client and provider ids
@@ -358,6 +366,7 @@ export const remindConsultationHasStartedJob = async () => {
           "Error in getting clients details for consultations that have started",
           err
         );
+        return [];
       });
 
     const providersDetails =
@@ -374,6 +383,7 @@ export const remindConsultationHasStartedJob = async () => {
             "Error in getting providers details for consultations that have started",
             err
           );
+          return [];
         });
 
     // For each consultation find the client and provider details and send the notification
@@ -471,10 +481,11 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
     .then((res) => res.rows)
     .catch((err) => {
       console.log("Error in getting all active countries", err);
+      return [];
     });
 
   // Remind providers to add more availability slots for each country
-  for (let i = 0; i < countries.length; i++) {
+  for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
     const poolCountry = country.alpha2;
 
@@ -492,30 +503,24 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
             "Error in getting all providers with availability slots",
             err
           );
+          return [];
         });
 
-    // For each provider, add more availability slots
-    for (let i = 0; i < providers?.length; i++) {
-      const provider = providers[i];
+    for (const provider of providers ?? []) {
       const providerLanguage = provider.language;
 
-      const dateInSevenDays = new Date();
-      dateInSevenDays.setDate(dateInSevenDays.getDate() + 7);
-      const lastAvailabilitySlot = provider.availabilityslots?.sort(
-        (a, b) => new Date(b) - new Date(a)
-      )[0];
-
-      if (
-        lastAvailabilitySlot < dateInSevenDays &&
-        lastAvailabilitySlot > new Date()
-      ) {
+      // Only send if provider has NO slots in the next 7 days
+      if (!provider.hasSlotNext7Days) {
         const shouldEmail =
-          provider.email && provider.emailnotificationsenabled;
+          provider.email && provider.emailNotificationsEnabled;
+
+        const channels = ["in-platform"];
+        if (shouldEmail) channels.push("email");
 
         await handleNotificationConsumerMessage({
           message: {
             value: JSON.stringify({
-              channels: [shouldEmail ? "email" : "", "in-platform"],
+              channels,
               emailArgs: {
                 emailType: "provider-availabilityRemindAddMoreSlots",
                 recipientEmail: provider.email,
@@ -544,10 +549,11 @@ export const generateReportJob = async (type) => {
     .then((res) => res.rows)
     .catch((err) => {
       console.log("Error in getting all active countries", err);
+      return [];
     });
 
   // Generate weekly report for each country
-  for (let i = 0; i < countries.length; i++) {
+  for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
     const countryId = country.country_id;
     const poolCountry = country.alpha2;

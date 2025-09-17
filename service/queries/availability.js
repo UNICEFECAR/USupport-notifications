@@ -5,12 +5,77 @@ export const getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery = async ({
 }) =>
   await getDBPool("piiDb", poolCountry).query(
     `
-      SELECT "user".user_id as userId, "provider_detail".provider_detail_id as id, "provider_detail".email as email, "notification_preference".email as emailNotificationsEnabled, MAX("availability".start_date) as lastAvailabilityStartDate, MAX("availability".slots) as availabilitySlots, "user".language
-      FROM "user"
-        INNER JOIN "provider_detail" ON "user".provider_detail_id = "provider_detail".provider_detail_id
-        INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id
-        INNER JOIN "availability" ON "user".provider_detail_id = "availability".provider_detail_id
-      WHERE "user".deleted_at is NULL
-      GROUP BY "user".user_id, "provider_detail".provider_detail_id, "provider_detail".email, "notification_preference".email;
+        WITH providers AS (
+          SELECT
+            u.user_id,
+            pd.provider_detail_id,
+            pd.email,
+            np.email AS email_notifications_enabled,
+            u.language
+          FROM "user" u
+          JOIN "provider_detail" pd ON u.provider_detail_id = pd.provider_detail_id
+          JOIN "notification_preference" np ON u.notification_preference_id = np.notification_preference_id
+          WHERE u.deleted_at IS NULL
+        ),
+        slot_union AS (
+          -- Regular slots (timestamptz[])
+          SELECT
+            a.provider_detail_id,
+            s.slot_dt
+          FROM "availability" a
+          LEFT JOIN LATERAL unnest(COALESCE(a.slots, ARRAY[]::timestamptz[])) AS s(slot_dt) ON TRUE
+          WHERE a.start_date >= (now() - interval '7 days')
+
+          UNION ALL
+
+          -- Campaign slots (jsonb array of objects; each has "time")
+          SELECT
+            a.provider_detail_id,
+            CASE
+              WHEN cs.elem ? 'time' AND NULLIF(BTRIM(cs.elem->>'time'), '') IS NOT NULL
+              THEN (cs.elem->>'time')::timestamptz
+              ELSE NULL::timestamptz
+            END AS slot_dt
+          FROM "availability" a
+          LEFT JOIN LATERAL (
+            SELECT elem
+            FROM jsonb_array_elements(
+              CASE
+                WHEN a.campaign_slots IS NULL THEN '[]'::jsonb
+                WHEN jsonb_typeof(a.campaign_slots) = 'array' THEN a.campaign_slots
+                ELSE '[]'::jsonb
+              END
+            ) AS elem
+          ) cs ON TRUE
+          WHERE a.start_date >= (now() - interval '7 days')
+        ),
+        rows AS (
+          SELECT
+            p.user_id,
+            p.provider_detail_id,
+            p.email,
+            p.email_notifications_enabled,
+            p.language,
+            su.slot_dt
+          FROM providers p
+          LEFT JOIN slot_union su
+            ON su.provider_detail_id = p.provider_detail_id
+        )
+        SELECT
+          user_id                              AS "userId",
+          provider_detail_id                   AS id,
+          email,
+          email_notifications_enabled          AS "emailNotificationsEnabled",
+          language,
+          MAX(slot_dt)                         AS "lastSlot",
+          COUNT(*) FILTER (
+            WHERE slot_dt >= now() AND slot_dt < (now() + interval '7 days')
+          )                                     AS "slotsNext7Days",
+          COALESCE(BOOL_OR(
+            slot_dt >= now() AND slot_dt < (now() + interval '7 days')
+          ), FALSE)                             AS "hasSlotNext7Days"
+        FROM rows
+        GROUP BY user_id, provider_detail_id, email, email_notifications_enabled, language;
+
     `
   );
