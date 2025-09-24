@@ -20,5 +20,9 @@
   "free": "Bezpłatnie",
   "schedule": "Zaplanowane na",
   "consultation_started": "Konsultacja rozpoczęła się",
-  "consultation_started_message": "Rozpoczęła się Twoja konsultacja ze specjalistą/ką {1}"
+  "consultation_started_message": "Rozpoczęła się Twoja konsultacja ze specjalistą/ką {1}",
+  "question_answered": "Pytanie odpowiedziane",
+  "question_answered_message": "Specjalista/ka {1} odpowiedział/a na Twoje pytanie",
+  "mood_tracker_reminder": "Przypomnienie o kontroli nastroju",
+  "mood_tracker_reminder_message": "Nie zapomnij o kontroli nastroju dziś"
 }

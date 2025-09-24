@@ -25,7 +25,11 @@ import {
   handleNotificationConsumerMessage,
   getCountryLabelFromAlpha2,
 } from "#utils/helperFunctions";
-import { getMultipleClientsNamesByIDs } from "#queries/clients";
+import {
+  getClientDetailsExcludingQuery,
+  getClientsDetailsForMoodTrackerQuery,
+  getMultipleClientsNamesByIDs,
+} from "#queries/clients";
 import { t } from "#translations/index";
 
 function getReportDate(date) {
@@ -708,5 +712,59 @@ export const generateReportJob = async (type) => {
         }).catch(console.log);
       }
     }
+  }
+};
+
+export const remindMoodTrackerJob = async (country) => {
+  const clientsDetailIds = await getClientsDetailsForMoodTrackerQuery({
+    poolCountry: country,
+  }).then((res) => {
+    if (res.rowCount > 0) {
+      return res.rows.map((x) => x.client_detail_id);
+    } else {
+      return [];
+    }
+  });
+
+  const clientsDetails = await getClientDetailsExcludingQuery({
+    poolCountry: country,
+    clientDetailIds: clientsDetailIds,
+  }).then((res) => {
+    if (res.rowCount > 0) {
+      return res.rows;
+    } else {
+      return [];
+    }
+  });
+
+  const tokensWithLangs = clientsDetails.reduce((acc, client) => {
+    acc[client.language] = [
+      ...(acc[client.language] || []),
+      ...(client.push_notification_tokens
+        ? client.push_notification_tokens
+        : []),
+    ];
+    return acc;
+  }, {});
+
+  for (const language in tokensWithLangs) {
+    const tokens = Array.from(
+      new Set(tokensWithLangs[language].filter((x) => !!x))
+    );
+
+    await handleNotificationConsumerMessage({
+      message: {
+        value: JSON.stringify({
+          channels: ["push"],
+          pushArgs: {
+            notificationType: "mood_tracker",
+            pushTokensArray: tokens,
+            country,
+          },
+          language,
+        }),
+      },
+      language: language,
+    }).catch(console.log);
   }
 };

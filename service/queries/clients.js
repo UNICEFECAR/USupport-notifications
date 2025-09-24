@@ -12,3 +12,28 @@ export const getMultipleClientsNamesByIDs = async ({
       `,
     [clientDetailIds]
   );
+
+export const getClientsDetailsForMoodTrackerQuery = async ({ poolCountry }) =>
+  await getDBPool("clinicalDb", poolCountry).query(
+    `
+        SELECT client_detail_id
+        FROM mood_tracker
+        WHERE DATE_TRUNC('day', created_at) = DATE_TRUNC('day', NOW())
+      `,
+    []
+  );
+
+export const getClientDetailsExcludingQuery = async ({
+  poolCountry,
+  clientDetailIds,
+}) =>
+  await getDBPool("piiDb", poolCountry).query(
+    `
+        SELECT client_detail.client_detail_id, push_notification_tokens, "user".language
+        FROM client_detail
+        INNER JOIN "user" ON client_detail.client_detail_id = "user".client_detail_id
+        WHERE client_detail.client_detail_id != ANY($1)
+        AND "user".deleted_at IS NULL;
+      `,
+    [clientDetailIds]
+  );

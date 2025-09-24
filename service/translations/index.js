@@ -1,12 +1,13 @@
-import { createRequire } from 'node:module';
+// eslint-disable-next-line
+import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
-const en = require('./en.json');
-const hy = require('./hy.json');
-const kk = require('./kk.json');
-const ru = require('./ru.json');
-const pl = require('./pl.json');
-const uk = require('./uk.json');
+const en = require("./en.json");
+const hy = require("./hy.json");
+const kk = require("./kk.json");
+const ru = require("./ru.json");
+const pl = require("./pl.json");
+const uk = require("./uk.json");
 
 const translations = {
   hy,
@@ -24,12 +25,12 @@ const translations = {
  * @param {Array} params the parameters to be inserted into the translation
  * @returns {string} the translated string
  */
-export const t = (key, language = 'en', params = []) => {
+export const t = (key, language = "en", params = []) => {
   let translation = undefined;
 
   // Make sure the language exists and if not return the default language
   if (!Object.keys(translations).includes(language)) {
-    translation = translations['en'][key];
+    translation = translations["en"][key];
   } else {
     translation = translations[language][key];
   }
@@ -39,7 +40,7 @@ export const t = (key, language = 'en', params = []) => {
       translation = translation.replace(`{${index + 1}}`, param);
     });
   } else {
-    translation = translations['en'][key];
+    translation = translations["en"][key];
   }
 
   return translation;

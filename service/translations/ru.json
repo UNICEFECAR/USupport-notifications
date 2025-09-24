@@ -20,5 +20,9 @@
   "free": "Свободно",
   "schedule": "Запланирована на ДАТА",
   "consultation_started": "Консультация началась",
-  "consultation_started_message": "Ваша консультация с консультантом {1} началась"
+  "consultation_started_message": "Ваша консультация с консультантом {1} началась",
+  "question_answered": "Вопрос отвечен",
+  "question_answered_message": "Консультант {1} ответил на Ваш вопрос",
+  "mood_tracker_reminder": "Напоминание о контроле настроения",
+  "mood_tracker_reminder_message": "Не забудьте ввести настроение сегодня"
 }

@@ -22,5 +22,7 @@
   "consultation_started": "Consultation started",
   "consultation_started_message": "Your consultation with provider {1} started",
   "question_answered": "Question answered",
-  "question_answered_message": "Your question was answered by provider {1}"
+  "question_answered_message": "Your question was answered by provider {1}",
+  "mood_tracker_reminder": "Mood tracker reminder",
+  "mood_tracker_reminder_message": "Don't forget to enter your mood today"
 }

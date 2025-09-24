@@ -155,6 +155,10 @@ export const raisePushNotification = async ({
         },
       };
       break;
+    case "mood_tracker":
+      notificationTitle = t("mood_tracker_reminder", language);
+      notificationMessage = t("mood_tracker_reminder_message", language);
+      break;
     default:
       break;
   }
@@ -164,7 +168,7 @@ export const raisePushNotification = async ({
     title: notificationTitle,
     body: notificationMessage,
     navigationData,
-    clientDetailId: data.clientDetailId,
+    clientDetailId: data?.clientDetailId,
   });
 };
 
