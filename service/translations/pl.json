@@ -27,6 +27,6 @@
   "consultation_started_message": "Rozpoczęła się Twoja konsultacja ze specjalistą/ką {1}",
   "question_answered": "Pytanie odpowiedziane",
   "question_answered_message": "Specjalista/ka {1} odpowiedział/a na Twoje pytanie",
-  "mood_tracker_reminder": "Przypomnienie o kontroli nastroju",
-  "mood_tracker_reminder_message": "Nie zapomnij o kontroli nastroju dziś"
+  "mood_tracker_reminder": "Szybki check-in: zapisz swój nastrój.",
+  "baseline_assessment_followup": "Czas na szybką samoocenę – dziś wróć do swojego punktu wyjścia."
 }

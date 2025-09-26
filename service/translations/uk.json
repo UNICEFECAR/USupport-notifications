@@ -28,5 +28,6 @@
   "question_answered": "Питання відповідено",
   "question_answered_message": "Фахівець/фахівчиня {1} відповіла на твоє питання",
   "mood_tracker_reminder": "Нагадування про контроль настрою",
-  "mood_tracker_reminder_message": "Не забудьте ввести настрою сегодня"
+  "mood_tracker_reminder_message": "Час короткої перевірки: зафіксуйте настрій.",
+  "baseline_assessment_followup": "Час на швидку перевірку з собою — пройдіть повторне базове оцінювання вже сьогодні."
 }

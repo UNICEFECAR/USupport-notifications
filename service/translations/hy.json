@@ -26,5 +26,7 @@
   "consultation_started": "Խորհրդատվությունն սկսված է",
   "consultation_started_message": "Խորհրդատուի{1} հետ ձեր խորհրդատվությունն սկսված է։",
   "question_answered": "Question answered",
-  "question_answered_message": "Your question was answered by provider {1}"
+  "question_answered_message": "Your question was answered by provider {1}",
+  "mood_tracker_reminder": "Արագ գրանցման ժամանակ. գրանցեք ձեր տրամադրությունը։",
+  "baseline_assessment_followup": "Ժամանակն է արագ վերանայելու ինքներդ ձեզ՝ այսօր վերանայեք ձեր սկզբնական դիրքը։"
 }

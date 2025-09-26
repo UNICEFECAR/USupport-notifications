@@ -30,6 +30,8 @@ import {
   getClientDetailsExcludingQuery,
   getClientsDetailsForMoodTrackerQuery,
   getMultipleClientsNamesByIDs,
+  getClientsWithOldCompletedBaselineAssessmentsQuery,
+  getClientDetailsWithPushTokensQuery,
 } from "#queries/clients";
 import { t } from "#translations/index";
 
@@ -936,5 +938,78 @@ export const remindMoodTrackerJob = async (country) => {
       },
       language: language,
     }).catch(console.log);
+  }
+};
+
+export const remindBaselineAssessmentFollowUpJob = async (country) => {
+  try {
+    // Get all clients who completed their baseline assessment 14+ days ago
+    // and send them a notification to complete their baseline assessment again
+    const clientsWithOldAssessments =
+      await getClientsWithOldCompletedBaselineAssessmentsQuery({
+        poolCountry: country,
+      }).then((res) => {
+        if (res.rowCount > 0) {
+          return res.rows.map((x) => x.client_detail_id);
+        } else {
+          return [];
+        }
+      });
+
+    if (clientsWithOldAssessments.length === 0) {
+      return;
+    }
+
+    const clientsDetails = await getClientDetailsWithPushTokensQuery({
+      poolCountry: country,
+      clientDetailIds: clientsWithOldAssessments,
+    }).then((res) => {
+      if (res.rowCount > 0) {
+        return res.rows;
+      } else {
+        return [];
+      }
+    });
+
+    if (clientsDetails.length === 0) {
+      return;
+    }
+
+    const tokensWithLangs = clientsDetails.reduce((acc, client) => {
+      acc[client.language] = [
+        ...(acc[client.language] || []),
+        ...(client.push_notification_tokens
+          ? client.push_notification_tokens
+          : []),
+      ];
+      return acc;
+    }, {});
+
+    for (const language in tokensWithLangs) {
+      const tokens = Array.from(
+        new Set(tokensWithLangs[language].filter((x) => !!x))
+      );
+
+      if (tokens.length > 0) {
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: ["push"],
+              pushArgs: {
+                notificationType: "baseline_assessment_followup",
+                pushTokensArray: tokens,
+                country,
+              },
+              language,
+            }),
+          },
+        }).catch(console.log);
+      }
+    }
+  } catch (error) {
+    console.error(
+      `Error in remindBaselineAssessmentFollowUpJob for ${country}:`,
+      error
+    );
   }
 };

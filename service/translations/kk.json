@@ -27,6 +27,6 @@
   "consultation_started_message": "{1} консультантпен консультацияңыз басталды",
   "question_answered": "Сұрақ жауап берілді",
   "question_answered_message": "{1} консультанті жауап берді",
-  "mood_tracker_reminder": "Мүдірімді талдау ескертуі",
-  "mood_tracker_reminder_message": "Мүдірімді талдауды енгізіңіз"
+  "mood_tracker_reminder": "Жылдам тіркелу уақыты: көңіл-күйіңізді жазып алыңыз.",
+  "baseline_assessment_followup": "Өзіңізбен жылдам тіркелу уақыты - бүгін бастапқы бағаңызды қайталаңыз."
 }

@@ -27,6 +27,7 @@
   "consultation_started_message": "Your consultation with provider {1} started",
   "question_answered": "Question answered",
   "question_answered_message": "Your question was answered by provider {1}",
-  "mood_tracker_reminder": "Mood tracker reminder",
-  "mood_tracker_reminder_message": "Don't forget to enter your mood today"
+  "mood_tracker_reminder": "Quick check-in time: record your mood.",
+  "baseline_assessment_followup": "Baseline reminder",
+  "baseline_assessment_followup_message": "Time for a quick check-in with yourself—retake your baseline today."
 }

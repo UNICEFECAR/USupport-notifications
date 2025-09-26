@@ -7,6 +7,7 @@ import {
   remindConsultationHasStartedJob,
   remindMoodTrackerJob,
   remindConsultation24Or48HoursBeforeJob,
+  remindBaselineAssessmentFollowUpJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
 
@@ -45,14 +46,12 @@ export const scheduleJobs = () => {
 
   schedule.scheduleJob("0 */1 * * *", async () => {
     // 24 hours before the consultations
-    console.log("remindConsultation24");
     await remindConsultation24Or48HoursBeforeJob(true);
   });
 
   schedule.scheduleJob("0 */1 * * *", async () => {
     // 48 hours before the consultations
     await remindConsultation24Or48HoursBeforeJob(false);
-    console.log("remindConsultation48");
   });
 
   // Run every hour
@@ -73,6 +72,11 @@ export const scheduleJobs = () => {
   // Run every last day of the month at 23:59 PM
   schedule.scheduleJob("59 23 L * *", async () => {
     await generateReportJob("month");
+  });
+
+  // Schedule baseline assessment follow-up job to run daily at 13:00 AM
+  schedule.scheduleJob("34 15 * * *", async () => {
+    await remindBaselineAssessmentFollowUpJob("RO");
   });
 
   getAllActiveCountries().then((res) => {

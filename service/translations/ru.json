@@ -27,6 +27,6 @@
   "consultation_started_message": "Ваша консультация с консультантом {1} началась",
   "question_answered": "Вопрос отвечен",
   "question_answered_message": "Консультант {1} ответил на Ваш вопрос",
-  "mood_tracker_reminder": "Напоминание о контроле настроения",
-  "mood_tracker_reminder_message": "Не забудьте ввести настроение сегодня"
+  "mood_tracker_reminder": "Быстрая регистрация: запишите свое настроение.",
+  "baseline_assessment_followup": "Пришло время для быстрой самопроверки — перепроверьте свой базовый уровень сегодня."
 }
