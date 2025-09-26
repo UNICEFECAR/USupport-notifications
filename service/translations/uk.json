@@ -13,6 +13,10 @@
   "consultation_reschedule_message": "Консультацію з фахівцем/фахівчинею {1} перенесено",
   "consultation_reminder": "Нагадування про консультацію",
   "consultation_reminder_message": "Консультація з фахівцем/фахівчинею {1} розпочнеться за {2} хвилин",
+  "consultation_reminder_24_hours_before": "Нагадування про консультацію",
+  "consultation_reminder_24_hours_before_message": "Твоя консультація з фахівцем/фахівчинею {1} відбудеться за 24 години",
+  "consultation_reminder_48_hours_before": "Нагадування про консультацію",
+  "consultation_reminder_48_hours_before_message": "Твоя консультація з фахівцем/фахівчинею {1} відбудеться за 48 годин",
   "client": "Клієнт/ка",
   "price": "Ціна",
   "consultation_time": "Час консультації",
@@ -20,5 +24,10 @@
   "free": "Безкоштовно",
   "schedule": "Заплановано на",
   "consultation_started": "Консультація розпочалася",
-  "consultation_started_message": "Консультація з фахівцем/фахівчинею {1} розпочалася"
+  "consultation_started_message": "Консультація з фахівцем/фахівчинею {1} розпочалася",
+  "question_answered": "Питання відповідено",
+  "question_answered_message": "Фахівець/фахівчиня {1} відповіла на твоє питання",
+  "mood_tracker_reminder": "Нагадування про контроль настрою",
+  "mood_tracker_reminder_message": "Час короткої перевірки: зафіксуйте настрій.",
+  "baseline_assessment_followup": "Час на швидку перевірку з собою — пройдіть повторне базове оцінювання вже сьогодні."
 }

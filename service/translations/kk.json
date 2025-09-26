@@ -13,6 +13,10 @@
   "consultation_reschedule_message": "Сіздің консультант {1} уақытыңыз ауыстырылды",
   "consultation_reminder": "Консультация туралы еске салу",
   "consultation_reminder_message": "{1} консультантімен консультацияңыз {2} минуттан кейін басталады",
+  "consultation_reminder_24_hours_before": "Консультация туралы еске салу",
+  "consultation_reminder_24_hours_before_message": "Сіздің {1} консультантімен консультацияңыз 24 сағаттан кейін өтеді",
+  "consultation_reminder_48_hours_before": "Консультация туралы еске салу",
+  "consultation_reminder_48_hours_before_message": "Сіздің {1} консультантімен консультацияңыз 48 сағаттан кейін өтеді",
   "client": "Клиент",
   "price": "Бағасы",
   "consultation_time": "Консультация уақыты",
@@ -20,5 +24,9 @@
   "free": "Бос",
   "schedule": "Жоспарланды",
   "consultation_started": "Консультация басталды",
-  "consultation_started_message": "{1} консультантпен консультацияңыз басталды"
+  "consultation_started_message": "{1} консультантпен консультацияңыз басталды",
+  "question_answered": "Сұрақ жауап берілді",
+  "question_answered_message": "{1} консультанті жауап берді",
+  "mood_tracker_reminder": "Жылдам тіркелу уақыты: көңіл-күйіңізді жазып алыңыз.",
+  "baseline_assessment_followup": "Өзіңізбен жылдам тіркелу уақыты - бүгін бастапқы бағаңызды қайталаңыз."
 }

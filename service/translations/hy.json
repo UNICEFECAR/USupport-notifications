@@ -13,6 +13,10 @@
   "consultation_reschedule_message": "Խորհրդատուի{1} հետ ձեր խորհրդատվությունը վերապլանավորված է",
   "consultation_reminder": "Խորհրդատվության հիշեցում",
   "consultation_reminder_message": "Խորհրդատուի{1} հետ ձեր խորհրդատվությունն սկսում է {2} րոպեից",
+  "consultation_reminder_24_hours_before": "Խորհրդատվության հիշեցում",
+  "consultation_reminder_24_hours_before_message": "Ձեր խորհրդատվությունը խորհրդատուի {1} հետ 24 ժամից է",
+  "consultation_reminder_48_hours_before": "Խորհրդատվության հիշեցում",
+  "consultation_reminder_48_hours_before_message": "Ձեր խորհրդատվությունը խորհրդատուի {1} հետ 48 ժամից է",
   "client": "Հաճախորդ",
   "price": "Արժեքը",
   "consultation_time": "Խորհրդատվության ժամանակը",
@@ -22,5 +26,7 @@
   "consultation_started": "Խորհրդատվությունն սկսված է",
   "consultation_started_message": "Խորհրդատուի{1} հետ ձեր խորհրդատվությունն սկսված է։",
   "question_answered": "Question answered",
-  "question_answered_message": "Your question was answered by provider {1}"
+  "question_answered_message": "Your question was answered by provider {1}",
+  "mood_tracker_reminder": "Արագ գրանցման ժամանակ. գրանցեք ձեր տրամադրությունը։",
+  "baseline_assessment_followup": "Ժամանակն է արագ վերանայելու ինքներդ ձեզ՝ այսօր վերանայեք ձեր սկզբնական դիրքը։"
 }

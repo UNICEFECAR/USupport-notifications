@@ -137,6 +137,22 @@ export const raisePushNotification = async ({
         data.minToConsultation,
       ]);
       break;
+    case "consultation_remind_start_24_hours_before":
+      notificationTitle = t("consultation_reminder_24_hours_before", language);
+      notificationMessage = t(
+        "consultation_reminder_24_hours_before_message",
+        language,
+        [data.providerName]
+      );
+      break;
+    case "consultation_remind_start_48_hours_before":
+      notificationTitle = t("consultation_reminder_48_hours_before", language);
+      notificationMessage = t(
+        "consultation_reminder_48_hours_before_message",
+        language,
+        [data.providerName]
+      );
+      break;
     case "consultation_started":
       notificationTitle = t("consultation_started", language);
       notificationMessage = t("consultation_started_message", language, [
@@ -155,6 +171,14 @@ export const raisePushNotification = async ({
         },
       };
       break;
+    case "mood_tracker":
+      notificationTitle = t("mood_tracker_reminder", language);
+      notificationMessage = "";
+      break;
+    case "baseline_assessment_followup":
+      notificationTitle = t("baseline_assessment_followup", language);
+      notificationMessage = "";
+      break;
     default:
       break;
   }
@@ -164,7 +188,7 @@ export const raisePushNotification = async ({
     title: notificationTitle,
     body: notificationMessage,
     navigationData,
-    clientDetailId: data.clientDetailId,
+    clientDetailId: data?.clientDetailId,
   });
 };
 

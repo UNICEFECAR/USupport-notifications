@@ -13,6 +13,10 @@
   "consultation_reschedule_message": "Your consultation with provider {1} was rescheduled",
   "consultation_reminder": "Consultation reminder",
   "consultation_reminder_message": "Your consultation with provider {1} starts in {2} minutes",
+  "consultation_reminder_24_hours_before": "Consultation reminder",
+  "consultation_reminder_24_hours_before_message": "Your consultation with provider {1} is in 24 hours",
+  "consultation_reminder_48_hours_before": "Consultation reminder",
+  "consultation_reminder_48_hours_before_message": "Your consultation with provider {1} is in 48 hours",
   "client": "Client",
   "price": "Price",
   "consultation_time": "Consultation time",
@@ -22,5 +26,8 @@
   "consultation_started": "Consultation started",
   "consultation_started_message": "Your consultation with provider {1} started",
   "question_answered": "Question answered",
-  "question_answered_message": "Your question was answered by provider {1}"
+  "question_answered_message": "Your question was answered by provider {1}",
+  "mood_tracker_reminder": "Quick check-in time: record your mood.",
+  "baseline_assessment_followup": "Baseline reminder",
+  "baseline_assessment_followup_message": "Time for a quick check-in with yourself—retake your baseline today."
 }

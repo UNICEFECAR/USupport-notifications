@@ -3,21 +3,45 @@
     "node": true,
     "es2021": true
   },
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["prettier"],
-  "rules": {
-    "no-undefined": "off",
-    "no-undef": "off",
-    "quotes": [
-      "error",
-      "double",
-      {
-        "allowTemplateLiterals": true
+  "plugins": ["prettier", "import"],
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["#routes", "./service/routes"],
+          ["#controllers", "./service/controllers"],
+          ["#middlewares", "./service/middlewares"],
+          ["#utils", "./service/utils"],
+          ["#queries", "./service/queries"],
+          ["#schemas", "./service/schemas"],
+          ["#translations", "./service/translations"]
+        ],
+        "extensions": [".js", ".jsx", ".json"]
       }
-    ]
+    }
+  },
+  "rules": {
+    "quotes": ["error", "double"],
+    "react/prop-types": "off",
+    "react/jsx-key": "off",
+    "no-case-declarations": "off",
+    "no-prototype-builtins": "off",
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+
+    "import/named": "error",
+    "import/default": "error",
+    "import/namespace": "error",
+    "import/no-unresolved": "error"
   }
 }

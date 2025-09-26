@@ -3,6 +3,7 @@ import {
   getConsultationsStartingNow,
   updateClientConsultationReminderSentQuery,
   updateProviderConsultationReminderSentQuery,
+  getConsultationsInWindowAroundOffset,
 } from "#queries/consultations";
 
 import {
@@ -25,7 +26,13 @@ import {
   handleNotificationConsumerMessage,
   getCountryLabelFromAlpha2,
 } from "#utils/helperFunctions";
-import { getMultipleClientsNamesByIDs } from "#queries/clients";
+import {
+  getClientDetailsExcludingQuery,
+  getClientsDetailsForMoodTrackerQuery,
+  getMultipleClientsNamesByIDs,
+  getClientsWithOldCompletedBaselineAssessmentsQuery,
+  getClientDetailsWithPushTokensQuery,
+} from "#queries/clients";
 import { t } from "#translations/index";
 
 function getReportDate(date) {
@@ -46,6 +53,175 @@ function getReportDate(date) {
 
   return `${formattedDate} - ${time}`;
 }
+
+export const remindConsultation24Or48HoursBeforeJob = async (
+  is24HoursBefore = true
+) => {
+  const countries = await getAllActiveCountries()
+    .then((res) => res.rows)
+    .catch((err) => {
+      console.log("Error in getting all active countries", err);
+      return [];
+    });
+
+  for (let i = 0; i < countries.length; i++) {
+    const country = countries[i];
+    const poolCountry = country.alpha2;
+    const countryLabel = getCountryLabelFromAlpha2(poolCountry);
+
+    const consultations = await getConsultationsInWindowAroundOffset({
+      poolCountry,
+      offsetHours: is24HoursBefore ? 24 : 48,
+      windowMinutes: 5,
+    })
+      .then((res) => {
+        if (res.rowCount === 0) return [];
+        return res.rows;
+      })
+      .catch((err) => {
+        console.log(
+          `Error in getting all consultations in ${
+            is24HoursBefore ? 24 : 48
+          } hours`,
+          err
+        );
+        return [];
+      });
+    console.log(consultations);
+
+    const clientIds = Array.from(
+      new Set(
+        consultations.map((consultation) => {
+          if (consultation.client_reminder_sent === false) {
+            return consultation.client_detail_id;
+          }
+        })
+      )
+    );
+
+    const providerIds = Array.from(
+      new Set(consultations.map((c) => c.provider_detail_id))
+    );
+
+    const clientsDetails = await getClientsDetailsForUpcomingConsultationsQuery(
+      {
+        poolCountry,
+        clientIds,
+      }
+    )
+      .then((res) => {
+        if (res.rowCount === 0) return [];
+        return res.rows;
+      })
+      .catch((err) => {
+        console.log("Error in reminding for upcoming consultations", err);
+        return [];
+      });
+
+    const providersDetails =
+      await getProvidersDetailsForUpcomingConsultationsQuery({
+        poolCountry,
+        providerIds,
+      })
+        .then((res) => {
+          if (res.rowCount === 0) return [];
+          return res.rows;
+        })
+        .catch((err) => {
+          console.log("Error in reminding for upcoming consultations", err);
+          return [];
+        });
+
+    for (let i = 0; i < clientsDetails.length; i++) {
+      const client = clientsDetails[i];
+      const clientLanguage = client.language;
+
+      const clientConsultation = consultations.find(
+        (consultation) =>
+          consultation.client_detail_id === client.id &&
+          consultation.client_reminder_sent === false
+      );
+
+      if (clientConsultation !== undefined) {
+        let providerDetails = providersDetails.find(
+          (x) => x.id === clientConsultation.provider_detail_id
+        );
+        if (!providerDetails) {
+          providerDetails =
+            await getProvidersDetailsForUpcomingConsultationsQuery({
+              providerIds: [clientConsultation.provider_detail_id],
+              poolCountry,
+            })
+              .then((res) => {
+                if (res.rowCount === 0) {
+                  console.log(
+                    "Error in fetching provider details for consultation reminder",
+                    clientConsultation.id
+                  );
+                  return {};
+                }
+                return res.rows[0];
+              })
+              .catch((err) => {
+                throw err;
+              });
+        }
+
+        const {
+          provider_name: providerName,
+          provider_patronym: providerPatronym,
+          provider_surname: providerSurname,
+        } = providerDetails;
+        const providerFullName = providerPatronym
+          ? `${providerName} ${providerPatronym} ${providerSurname}`
+          : `${providerName} ${providerSurname}`;
+
+        const shouldEmail = client.email && client.emailnotificationsenabled;
+
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: [shouldEmail ? "email" : "", "in-platform", "push"],
+              emailArgs: {
+                emailType: "client-consultationRemindStart24or48HoursBefore",
+                recipientEmail: client.email,
+                recipientUserType: "client",
+                data: {
+                  countryLabel,
+                  is24HoursBefore,
+                  providerName: providerFullName,
+                },
+              },
+              inPlatformArgs: {
+                notificationType: is24HoursBefore
+                  ? "consultation_remind_start_24_hours_before"
+                  : "consultation_remind_start_48_hours_before",
+                recipientId: client.userid,
+                country: poolCountry,
+                data: {
+                  provider_detail_id: clientConsultation.provider_detail_id,
+                  time: clientConsultation.time,
+                  consultation_id: clientConsultation.id,
+                },
+              },
+              pushArgs: {
+                notificationType: is24HoursBefore
+                  ? "consultation_remind_start_24_hours_before"
+                  : "consultation_remind_start_48_hours_before",
+                pushTokensArray: client.push_notification_tokens,
+                country: poolCountry,
+                data: {
+                  providerName: providerFullName,
+                },
+              },
+              language: clientLanguage,
+            }),
+          },
+        }).catch(console.log);
+      }
+    }
+  }
+};
 
 export const remindConsultationStartJob = async () => {
   // Get all the active countries from the database
@@ -708,5 +884,132 @@ export const generateReportJob = async (type) => {
         }).catch(console.log);
       }
     }
+  }
+};
+
+export const remindMoodTrackerJob = async (country) => {
+  const clientsDetailIds = await getClientsDetailsForMoodTrackerQuery({
+    poolCountry: country,
+  }).then((res) => {
+    if (res.rowCount > 0) {
+      return res.rows.map((x) => x.client_detail_id);
+    } else {
+      return [];
+    }
+  });
+
+  const clientsDetails = await getClientDetailsExcludingQuery({
+    poolCountry: country,
+    clientDetailIds: clientsDetailIds,
+  }).then((res) => {
+    if (res.rowCount > 0) {
+      return res.rows;
+    } else {
+      return [];
+    }
+  });
+
+  const tokensWithLangs = clientsDetails.reduce((acc, client) => {
+    acc[client.language] = [
+      ...(acc[client.language] || []),
+      ...(client.push_notification_tokens
+        ? client.push_notification_tokens
+        : []),
+    ];
+    return acc;
+  }, {});
+
+  for (const language in tokensWithLangs) {
+    const tokens = Array.from(
+      new Set(tokensWithLangs[language].filter((x) => !!x))
+    );
+
+    await handleNotificationConsumerMessage({
+      message: {
+        value: JSON.stringify({
+          channels: ["push"],
+          pushArgs: {
+            notificationType: "mood_tracker",
+            pushTokensArray: tokens,
+            country,
+          },
+          language,
+        }),
+      },
+      language: language,
+    }).catch(console.log);
+  }
+};
+
+export const remindBaselineAssessmentFollowUpJob = async (country) => {
+  try {
+    // Get all clients who completed their baseline assessment 14+ days ago
+    // and send them a notification to complete their baseline assessment again
+    const clientsWithOldAssessments =
+      await getClientsWithOldCompletedBaselineAssessmentsQuery({
+        poolCountry: country,
+      }).then((res) => {
+        if (res.rowCount > 0) {
+          return res.rows.map((x) => x.client_detail_id);
+        } else {
+          return [];
+        }
+      });
+
+    if (clientsWithOldAssessments.length === 0) {
+      return;
+    }
+
+    const clientsDetails = await getClientDetailsWithPushTokensQuery({
+      poolCountry: country,
+      clientDetailIds: clientsWithOldAssessments,
+    }).then((res) => {
+      if (res.rowCount > 0) {
+        return res.rows;
+      } else {
+        return [];
+      }
+    });
+
+    if (clientsDetails.length === 0) {
+      return;
+    }
+
+    const tokensWithLangs = clientsDetails.reduce((acc, client) => {
+      acc[client.language] = [
+        ...(acc[client.language] || []),
+        ...(client.push_notification_tokens
+          ? client.push_notification_tokens
+          : []),
+      ];
+      return acc;
+    }, {});
+
+    for (const language in tokensWithLangs) {
+      const tokens = Array.from(
+        new Set(tokensWithLangs[language].filter((x) => !!x))
+      );
+
+      if (tokens.length > 0) {
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: ["push"],
+              pushArgs: {
+                notificationType: "baseline_assessment_followup",
+                pushTokensArray: tokens,
+                country,
+              },
+              language,
+            }),
+          },
+        }).catch(console.log);
+      }
+    }
+  } catch (error) {
+    console.error(
+      `Error in remindBaselineAssessmentFollowUpJob for ${country}:`,
+      error
+    );
   }
 };

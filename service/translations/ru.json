@@ -13,6 +13,10 @@
   "consultation_reschedule_message": "Ваша консультация с консультантом {1} была перенесена",
   "consultation_reminder": "Напоминание о консультации",
   "consultation_reminder_message": "Ваша консультация с консультантом {1} начнется через {2} минут",
+  "consultation_reminder_24_hours_before": "Напоминание о консультации",
+  "consultation_reminder_24_hours_before_message": "Ваша консультация с консультантом {1} состоится через 24 часа",
+  "consultation_reminder_48_hours_before": "Напоминание о консультации",
+  "consultation_reminder_48_hours_before_message": "Ваша консультация с консультантом {1} состоится через 48 часов",
   "client": "Клиент",
   "price": "Цена",
   "consultation_time": "Время консультации",
@@ -20,5 +24,9 @@
   "free": "Свободно",
   "schedule": "Запланирована на ДАТА",
   "consultation_started": "Консультация началась",
-  "consultation_started_message": "Ваша консультация с консультантом {1} началась"
+  "consultation_started_message": "Ваша консультация с консультантом {1} началась",
+  "question_answered": "Вопрос отвечен",
+  "question_answered_message": "Консультант {1} ответил на Ваш вопрос",
+  "mood_tracker_reminder": "Быстрая регистрация: запишите свое настроение.",
+  "baseline_assessment_followup": "Пришло время для быстрой самопроверки — перепроверьте свой базовый уровень сегодня."
 }

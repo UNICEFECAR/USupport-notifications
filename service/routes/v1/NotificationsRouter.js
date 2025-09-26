@@ -44,7 +44,7 @@ router.get("/user-has-unread", populateUser, async (req, res, next) => {
    * #desc    Get whether the current user has unread notifications
    */
   const country = req.header("x-country-alpha-2");
-  const userId = req.user.user_id;
+  const userId = req.user?.user_id;
 
   return await getHasUnreadNotificationsByUserIdSchema
     .noUnknown(true)

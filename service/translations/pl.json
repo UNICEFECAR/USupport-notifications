@@ -13,6 +13,10 @@
   "consultation_reschedule_message": "Konsultacja ze specjalistą/ką {1} została przełożona.",
   "consultation_reminder": "Przypomnienie o konsultacji",
   "consultation_reminder_message": "Twoja konsultacja ze specjalistą/ką {1} rozpocznie się za {2} minut",
+  "consultation_reminder_24_hours_before": "Przypomnienie o konsultacji",
+  "consultation_reminder_24_hours_before_message": "Twoja konsultacja ze specjalistą/ką {1} odbędzie się za 24 godziny",
+  "consultation_reminder_48_hours_before": "Przypomnienie o konsultacji",
+  "consultation_reminder_48_hours_before_message": "Twoja konsultacja ze specjalistą/ką {1} odbędzie się za 48 godzin",
   "client": "Klient/ka",
   "price": "Cena",
   "consultation_time": "Czas konsultacji",
@@ -20,5 +24,9 @@
   "free": "Bezpłatnie",
   "schedule": "Zaplanowane na",
   "consultation_started": "Konsultacja rozpoczęła się",
-  "consultation_started_message": "Rozpoczęła się Twoja konsultacja ze specjalistą/ką {1}"
+  "consultation_started_message": "Rozpoczęła się Twoja konsultacja ze specjalistą/ką {1}",
+  "question_answered": "Pytanie odpowiedziane",
+  "question_answered_message": "Specjalista/ka {1} odpowiedział/a na Twoje pytanie",
+  "mood_tracker_reminder": "Szybki check-in: zapisz swój nastrój.",
+  "baseline_assessment_followup": "Czas na szybką samoocenę – dziś wróć do swojego punktu wyjścia."
 }
