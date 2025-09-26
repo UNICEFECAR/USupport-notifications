@@ -6,6 +6,7 @@ import {
   generateReportJob,
   remindConsultationHasStartedJob,
   remindMoodTrackerJob,
+  remindConsultation24Or48HoursBeforeJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
 
@@ -40,6 +41,18 @@ export const scheduleJobs = () => {
   // Run every five minutes
   schedule.scheduleJob("*/5 * * * *", async () => {
     await remindConsultationStartJob();
+  });
+
+  schedule.scheduleJob("0 */1 * * *", async () => {
+    // 24 hours before the consultations
+    console.log("remindConsultation24");
+    await remindConsultation24Or48HoursBeforeJob(true);
+  });
+
+  schedule.scheduleJob("0 */1 * * *", async () => {
+    // 48 hours before the consultations
+    await remindConsultation24Or48HoursBeforeJob(false);
+    console.log("remindConsultation48");
   });
 
   // Run every hour

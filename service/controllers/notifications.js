@@ -137,6 +137,22 @@ export const raisePushNotification = async ({
         data.minToConsultation,
       ]);
       break;
+    case "consultation_remind_start_24_hours_before":
+      notificationTitle = t("consultation_reminder_24_hours_before", language);
+      notificationMessage = t(
+        "consultation_reminder_24_hours_before_message",
+        language,
+        [data.providerName]
+      );
+      break;
+    case "consultation_remind_start_48_hours_before":
+      notificationTitle = t("consultation_reminder_48_hours_before", language);
+      notificationMessage = t(
+        "consultation_reminder_48_hours_before_message",
+        language,
+        [data.providerName]
+      );
+      break;
     case "consultation_started":
       notificationTitle = t("consultation_started", language);
       notificationMessage = t("consultation_started_message", language, [
