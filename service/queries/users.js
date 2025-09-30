@@ -40,6 +40,29 @@ export const getClientsDetailsForUpcomingConsultationsQuery = async ({
     [clientIds]
   );
 
+export const getClientsDetailsForMoodTrackerReportQuery = async ({
+  poolCountry,
+  clientIds,
+}) =>
+  await getDBPool("piiDb", poolCountry).query(
+    `
+      SELECT 
+        "client_detail".client_detail_id AS id, 
+        "client_detail".email AS email, 
+        "notification_preference".email AS emailNotificationsEnabled, 
+        "user".language,
+        "user".user_id AS user_id
+      FROM 
+        "user"
+        INNER JOIN "client_detail" ON "user".client_detail_id = "client_detail".client_detail_id
+        INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id
+      WHERE 
+          "user".deleted_at IS NULL 
+          AND "user".client_detail_id = ANY($1::UUID[]);
+    `,
+    [clientIds]
+  );
+
 export const getProvidersDetailsForUpcomingConsultationsQuery = async ({
   poolCountry,
   providerIds,

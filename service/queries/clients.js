@@ -66,3 +66,16 @@ export const getClientDetailsWithPushTokensQuery = async ({
       `,
     [clientDetailIds]
   );
+
+export const getMoodTrackUsersQuery = async ({ poolCountry }) => {
+  return await getDBPool("clinicalDb", poolCountry).query(
+    `
+        SELECT DISTINCT client_detail_id
+        FROM mood_tracker
+        WHERE created_at >= DATE_TRUNC('week', NOW()) - INTERVAL '7 days'
+        AND created_at < DATE_TRUNC('week', NOW())
+        AND is_deleted = false
+      `,
+    []
+  );
+};
