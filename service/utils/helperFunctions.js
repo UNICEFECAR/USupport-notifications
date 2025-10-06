@@ -1,4 +1,5 @@
 import { produceSendEmail } from "#utils/kafkaProducers";
+import fetch from "node-fetch";
 
 import {
   raiseInPlatformNotification,
@@ -66,4 +67,43 @@ const countriesMap = {
 
 export const getCountryLabelFromAlpha2 = (alpha2) => {
   return countriesMap[alpha2.toLocaleLowerCase()];
+};
+
+export const fetchClientMoodReport = async ({
+  country,
+  language,
+  userId,
+  startDateISO,
+  endDateISO,
+}) => {
+  try {
+    const CLIENT_URL = process.env.CLIENT_URL;
+    const CLIENT_LOCAL_HOST = "http://localhost:3001";
+
+    if (!CLIENT_URL) {
+      console.log("fetchClientMoodReport error: CLIENT_URL is not defined");
+      return null;
+    }
+
+    const url = `${CLIENT_URL}/client/v1/mood-tracker/report?startDate=${encodeURIComponent(
+      startDateISO
+    )}&endDate=${encodeURIComponent(endDateISO)}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-country-alpha-2": country,
+        "x-language-alpha-2": language,
+        "x-user-id": userId,
+        "Content-type": "application/json",
+        host: CLIENT_LOCAL_HOST,
+      },
+    });
+
+    if (!response.ok) return null;
+    return await response.json();
+  } catch (e) {
+    console.log("fetchClientMoodReport error", e);
+    return null;
+  }
 };

@@ -8,6 +8,7 @@ import {
   remindMoodTrackerJob,
   remindConsultation24Or48HoursBeforeJob,
   remindBaselineAssessmentFollowUpJob,
+  // generateWeeklyMoodTrackReportsJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
 
@@ -78,6 +79,11 @@ export const scheduleJobs = () => {
   schedule.scheduleJob("34 15 * * *", async () => {
     await remindBaselineAssessmentFollowUpJob("RO");
   });
+
+  // Run every Monday at 05:00 AM UTC
+  // schedule.scheduleJob("0 5 * * 1", async () => {
+  //   await generateWeeklyMoodTrackReportsJob("RO");
+  // });
 
   getAllActiveCountries().then((res) => {
     const countries = res.rows;

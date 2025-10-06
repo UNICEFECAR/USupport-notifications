@@ -10,6 +10,7 @@ import {
   getClientsDetailsForUpcomingConsultationsQuery,
   getProvidersDetailsForUpcomingConsultationsQuery,
   getAllProvidersQuery,
+  getClientsDetailsForMoodTrackerReportQuery,
 } from "#queries/users";
 
 import { getAllActiveCountries } from "#queries/countries";
@@ -25,6 +26,7 @@ import {
 import {
   handleNotificationConsumerMessage,
   getCountryLabelFromAlpha2,
+  fetchClientMoodReport,
 } from "#utils/helperFunctions";
 import {
   getClientDetailsExcludingQuery,
@@ -32,7 +34,9 @@ import {
   getMultipleClientsNamesByIDs,
   getClientsWithOldCompletedBaselineAssessmentsQuery,
   getClientDetailsWithPushTokensQuery,
+  getMoodTrackUsersQuery,
 } from "#queries/clients";
+
 import { t } from "#translations/index";
 
 function getReportDate(date) {
@@ -1011,5 +1015,128 @@ export const remindBaselineAssessmentFollowUpJob = async (country) => {
       `Error in remindBaselineAssessmentFollowUpJob for ${country}:`,
       error
     );
+  }
+};
+
+export const generateWeeklyMoodTrackReportsJob = async (country) => {
+  const clientsDetailIds = await getMoodTrackUsersQuery({
+    poolCountry: country,
+  }).then((res) => {
+    if (res.rowCount > 0) {
+      return res.rows.map((x) => x.client_detail_id);
+    } else {
+      return [];
+    }
+  });
+
+  if (!clientsDetailIds?.length) return;
+
+  const clientsDetails = await getClientsDetailsForMoodTrackerReportQuery({
+    poolCountry: country,
+    clientIds: clientsDetailIds,
+  })
+    .then((res) => (res.rowCount > 0 ? res.rows : []))
+    .catch(() => []);
+
+  if (!clientsDetails.length) return;
+
+  // Calculate previous week's range in Romania (Europe/Bucharest) time:
+  // Start: previous Monday 00:00 RO local, End: this Monday 00:00 RO local
+  const timeZone = "Europe/Bucharest";
+
+  // Convert a UTC date to a Date object representing the same instant but with RO local components
+  const toRoLocal = (utcDate) =>
+    new Date(utcDate.toLocaleString("en-US", { timeZone }));
+
+  // Given RO local date parts, return the corresponding UTC Date (handles DST transitions)
+  const roLocalToUtc = (y, m, d, hh = 0, mm = 0, ss = 0, ms = 0) => {
+    // First, create a UTC instant from the provided components
+    const guessUtcMs = Date.UTC(y, m, d, hh, mm, ss, ms);
+    // Compute the RO offset at that instant
+    const roAtGuess = new Date(
+      new Date(guessUtcMs).toLocaleString("en-US", { timeZone })
+    );
+    const offsetMs = roAtGuess.getTime() - guessUtcMs;
+    // Adjust to get the UTC instant corresponding to the intended RO local time
+    return new Date(guessUtcMs - offsetMs);
+  };
+
+  const nowUtc = new Date();
+  const nowRo = toRoLocal(nowUtc);
+  const roMidnightToday = new Date(nowRo);
+  roMidnightToday.setHours(0, 0, 0, 0);
+  const roDay = roMidnightToday.getDay(); // 0=Sun, 1=Mon, ... 6=Sat
+  const daysSinceMondayRo = (roDay + 6) % 7; // Mon->0
+  const thisMondayRo = new Date(roMidnightToday);
+  thisMondayRo.setDate(roMidnightToday.getDate() - daysSinceMondayRo);
+  const prevMondayRo = new Date(thisMondayRo);
+  prevMondayRo.setDate(thisMondayRo.getDate() - 7);
+
+  const endDate = roLocalToUtc(
+    thisMondayRo.getFullYear(),
+    thisMondayRo.getMonth(),
+    thisMondayRo.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
+  const startDate = roLocalToUtc(
+    prevMondayRo.getFullYear(),
+    prevMondayRo.getMonth(),
+    prevMondayRo.getDate(),
+    0,
+    0,
+    0,
+    0
+  );
+
+  const startDateISO = startDate.toISOString();
+  const endDateISO = endDate.toISOString();
+
+  const countryLabel = getCountryLabelFromAlpha2(country);
+
+  console.log("clientsDetails", clientsDetails);
+
+  for (const client of clientsDetails) {
+    try {
+      const shouldEmail = client.email && client.emailnotificationsenabled;
+      if (!shouldEmail) continue;
+      console.log("client", client);
+
+      // Call client service to generate CSV using client's language
+      const result = await fetchClientMoodReport({
+        country,
+        language: client.language,
+        userId: client.user_id,
+        startDateISO,
+        endDateISO,
+      });
+      if (!result) continue;
+      const csvData = result?.csvData;
+      if (!csvData) continue;
+
+      await handleNotificationConsumerMessage({
+        message: {
+          value: JSON.stringify({
+            channels: ["email"],
+            emailArgs: {
+              emailType: "client-moodTrackerReportWeekly",
+              recipientEmail: client.email,
+              recipientUserType: "client",
+              country: country, // Add country code for email service validation
+              data: {
+                csvData,
+                countryLabel,
+              },
+            },
+            language: client.language,
+          }),
+        },
+      }).catch(console.log);
+    } catch (e) {
+      console.log("Error generating/sending mood tracker report", e);
+      continue;
+    }
   }
 };
