@@ -28,5 +28,14 @@
   "question_answered": "Вопрос отвечен",
   "question_answered_message": "Консультант {1} ответил на Ваш вопрос",
   "mood_tracker_reminder": "Быстрая регистрация: запишите свое настроение.",
-  "baseline_assessment_followup": "Пришло время для быстрой самопроверки — перепроверьте свой базовый уровень сегодня."
+  "baseline_assessment_followup": "Пришло время для быстрой самопроверки — перепроверьте свой базовый уровень сегодня.",
+  "mood_tracker_weekly_success": "Отличная работа!",
+  "mood_tracker_weekly_success_message": "Молодец, вы записали свое настроение {1} раз на прошлой неделе, продолжайте в том же духе!",
+  "mood_tracker_weekly_encouragement": "Мы скучаем по вам!",
+  "mood_tracker_weekly_encouragement_message": "Вы не записали свое настроение на прошлой неделе. Регулярно отслеживайте свое настроение, чтобы лучше понять себя!",
+  "mood_happy": "Счастливый",
+  "mood_good": "Хороший",
+  "mood_sad": "Грустный",
+  "mood_depressed": "В депрессии",
+  "mood_worried": "Взволнованный"
 }

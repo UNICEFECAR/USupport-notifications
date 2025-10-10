@@ -1,5 +1,4 @@
 import { produceSendEmail } from "#utils/kafkaProducers";
-import fetch from "node-fetch";
 
 import {
   raiseInPlatformNotification,
@@ -69,41 +68,55 @@ export const getCountryLabelFromAlpha2 = (alpha2) => {
   return countriesMap[alpha2.toLocaleLowerCase()];
 };
 
-export const fetchClientMoodReport = async ({
-  country,
-  language,
-  userId,
+const formatDateToDDMMYYYY = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+};
+
+export const calculateMoodSummary = (
+  moodTracks,
   startDateISO,
   endDateISO,
-}) => {
-  try {
-    const CLIENT_URL = process.env.CLIENT_URL;
-    const CLIENT_LOCAL_HOST = "http://localhost:3001";
+  language,
+  t
+) => {
+  const dateRange = `${formatDateToDDMMYYYY(
+    startDateISO
+  )} - ${formatDateToDDMMYYYY(endDateISO)}`;
 
-    if (!CLIENT_URL) {
-      console.log("fetchClientMoodReport error: CLIENT_URL is not defined");
-      return null;
+  // Calculate mood counts
+  const moodCounts = {};
+  moodTracks.forEach((moodTrack) => {
+    moodCounts[moodTrack.mood] = (moodCounts[moodTrack.mood] || 0) + 1;
+  });
+
+  // Find the most selected mood
+  let mostSelectedMood = "N/A";
+  let maxCount = 0;
+  Object.entries(moodCounts).forEach(([mood, count]) => {
+    if (count > maxCount) {
+      maxCount = count;
+      mostSelectedMood = t(`mood_${mood}`, language) || mood;
     }
+  });
 
-    const url = `${CLIENT_URL}/client/v1/mood-tracker/report?startDate=${encodeURIComponent(
-      startDateISO
-    )}&endDate=${encodeURIComponent(endDateISO)}`;
+  // Sort moods by frequency for breakdown
+  const moodBreakdown = Object.entries(moodCounts)
+    .sort(([, a], [, b]) => b - a)
+    .map(([mood, count]) => ({
+      mood: t(`mood_${mood}`, language) || mood,
+      count,
+      percentage: ((count / moodTracks.length) * 100).toFixed(1),
+    }));
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "x-country-alpha-2": country,
-        "x-language-alpha-2": language,
-        "x-user-id": userId,
-        "Content-type": "application/json",
-        host: CLIENT_LOCAL_HOST,
-      },
-    });
-
-    if (!response.ok) return null;
-    return await response.json();
-  } catch (e) {
-    console.log("fetchClientMoodReport error", e);
-    return null;
-  }
+  return {
+    dateRange,
+    totalMoodTracks: moodTracks.length,
+    mostSelectedMood,
+    mostSelectedMoodCount: maxCount,
+    moodBreakdown,
+  };
 };

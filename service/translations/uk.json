@@ -29,5 +29,14 @@
   "question_answered_message": "Фахівець/фахівчиня {1} відповіла на твоє питання",
   "mood_tracker_reminder": "Нагадування про контроль настрою",
   "mood_tracker_reminder_message": "Час короткої перевірки: зафіксуйте настрій.",
-  "baseline_assessment_followup": "Час на швидку перевірку з собою — пройдіть повторне базове оцінювання вже сьогодні."
+  "baseline_assessment_followup": "Час на швидку перевірку з собою — пройдіть повторне базове оцінювання вже сьогодні.",
+  "mood_tracker_weekly_success": "Чудова робота!",
+  "mood_tracker_weekly_success_message": "Гарна робота, ти зафіксував/ла свій настрій {1} разів минулого тижня, продовжуй у тому ж дусі!",
+  "mood_tracker_weekly_encouragement": "Ми сумуємо за тобою!",
+  "mood_tracker_weekly_encouragement_message": "Ти не фіксував/ла свій настрій минулого тижня. Відстежуй свій настрій регулярно, щоб краще зрозуміти себе!",
+  "mood_happy": "Щасливим/ою",
+  "mood_good": "Задоволеним/ою",
+  "mood_sad": "Засмученим/ою",
+  "mood_depressed": "Пригніченим/ою",
+  "mood_worried": "Схвильованим/ою"
 }

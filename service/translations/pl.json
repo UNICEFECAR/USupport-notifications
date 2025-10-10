@@ -28,5 +28,14 @@
   "question_answered": "Pytanie odpowiedziane",
   "question_answered_message": "Specjalista/ka {1} odpowiedział/a na Twoje pytanie",
   "mood_tracker_reminder": "Szybki check-in: zapisz swój nastrój.",
-  "baseline_assessment_followup": "Czas na szybką samoocenę – dziś wróć do swojego punktu wyjścia."
+  "baseline_assessment_followup": "Czas na szybką samoocenę – dziś wróć do swojego punktu wyjścia.",
+  "mood_tracker_weekly_success": "Świetna robota!",
+  "mood_tracker_weekly_success_message": "Dobra robota, zapisałeś/aś swój nastrój {1} razy w zeszłym tygodniu, tak trzymaj!",
+  "mood_tracker_weekly_encouragement": "Tęsknimy za Tobą!",
+  "mood_tracker_weekly_encouragement_message": "Nie zapisałeś/aś swojego nastroju w zeszłym tygodniu. Śledź swój nastrój regularnie, aby lepiej zrozumieć siebie!",
+  "mood_happy": "Szczęśliwy/a",
+  "mood_good": "Zadowolony/a",
+  "mood_sad": "Smutny/a",
+  "mood_depressed": "Przygnębiony/a",
+  "mood_worried": "Zmartwiony/a"
 }
