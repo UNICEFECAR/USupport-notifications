@@ -26,7 +26,7 @@ import {
 import {
   handleNotificationConsumerMessage,
   getCountryLabelFromAlpha2,
-  fetchClientMoodReport,
+  calculateMoodSummary,
 } from "#utils/helperFunctions";
 import {
   getClientDetailsExcludingQuery,
@@ -34,7 +34,7 @@ import {
   getMultipleClientsNamesByIDs,
   getClientsWithOldCompletedBaselineAssessmentsQuery,
   getClientDetailsWithPushTokensQuery,
-  getMoodTrackUsersQuery,
+  getAllMoodTrackDataForPeriodQuery,
 } from "#queries/clients";
 
 import { t } from "#translations/index";
@@ -1019,27 +1019,6 @@ export const remindBaselineAssessmentFollowUpJob = async (country) => {
 };
 
 export const generateWeeklyMoodTrackReportsJob = async (country) => {
-  const clientsDetailIds = await getMoodTrackUsersQuery({
-    poolCountry: country,
-  }).then((res) => {
-    if (res.rowCount > 0) {
-      return res.rows.map((x) => x.client_detail_id);
-    } else {
-      return [];
-    }
-  });
-
-  if (!clientsDetailIds?.length) return;
-
-  const clientsDetails = await getClientsDetailsForMoodTrackerReportQuery({
-    poolCountry: country,
-    clientIds: clientsDetailIds,
-  })
-    .then((res) => (res.rowCount > 0 ? res.rows : []))
-    .catch(() => []);
-
-  if (!clientsDetails.length) return;
-
   // Calculate previous week's range in Romania (Europe/Bucharest) time:
   // Start: previous Monday 00:00 RO local, End: this Monday 00:00 RO local
   const timeZone = "Europe/Bucharest";
@@ -1096,46 +1075,118 @@ export const generateWeeklyMoodTrackReportsJob = async (country) => {
 
   const countryLabel = getCountryLabelFromAlpha2(country);
 
-  console.log("clientsDetails", clientsDetails);
+  // Get ALL active clients with detailed information (email, language, notification preferences, push tokens)
+  const clientsDetails = await getClientsDetailsForMoodTrackerReportQuery({
+    poolCountry: country,
+  })
+    .then((res) => (res.rowCount > 0 ? res.rows : []))
+    .catch((err) => {
+      console.log("Error in getting all active clients", err);
+      return [];
+    });
+
+  if (!clientsDetails.length) return;
+
+  // Get ALL mood track data for the period to check which users logged mood
+  const allMoodData = await getAllMoodTrackDataForPeriodQuery({
+    poolCountry: country,
+    startDate: startDateISO,
+    endDate: endDateISO,
+  })
+    .then((res) => (res.rowCount > 0 ? res.rows : []))
+    .catch((err) => {
+      console.log("Error in getting all mood track data for the period", err);
+      return [];
+    });
+
+  // Create a Set of client_detail_ids who logged mood in the last week
+  const clientsWhoLoggedMood = new Set(
+    allMoodData.map((entry) => entry.client_detail_id)
+  );
 
   for (const client of clientsDetails) {
     try {
       const shouldEmail = client.email && client.emailnotificationsenabled;
-      if (!shouldEmail) continue;
-      console.log("client", client);
+      const hasLoggedMood = clientsWhoLoggedMood.has(client.id);
 
-      // Call client service to generate CSV using client's language
-      const result = await fetchClientMoodReport({
-        country,
-        language: client.language,
-        userId: client.user_id,
-        startDateISO,
-        endDateISO,
-      });
-      if (!result) continue;
-      const csvData = result?.csvData;
-      if (!csvData) continue;
+      if (hasLoggedMood) {
+        // Get client's mood data for the period
+        const clientMoodData = allMoodData.filter(
+          (entry) => entry.client_detail_id === client.id
+        );
 
-      await handleNotificationConsumerMessage({
-        message: {
-          value: JSON.stringify({
-            channels: ["email"],
-            emailArgs: {
-              emailType: "client-moodTrackerReportWeekly",
-              recipientEmail: client.email,
-              recipientUserType: "client",
-              country: country, // Add country code for email service validation
-              data: {
-                csvData,
-                countryLabel,
+        if (!clientMoodData.length) continue;
+
+        // Calculate summary statistics
+        const summary = calculateMoodSummary(
+          clientMoodData,
+          startDateISO,
+          endDateISO,
+          client.language,
+          t
+        );
+
+        const channels = ["push"];
+        if (shouldEmail) channels.push("email");
+
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels,
+              emailArgs: {
+                emailType: "client-moodTrackerReportWeekly",
+                recipientEmail: client.email,
+                recipientUserType: "client",
+                country: country,
+                data: {
+                  countryLabel,
+                  summary,
+                },
               },
-            },
-            language: client.language,
-          }),
-        },
-      }).catch(console.log);
+              pushArgs: {
+                notificationType: "mood_tracker_weekly_success",
+                pushTokensArray: client.push_notification_tokens,
+                country: country,
+                data: {
+                  times: clientMoodData.length,
+                },
+              },
+              language: client.language,
+            }),
+          },
+        }).catch(console.log);
+      } else {
+        const channels = ["push"];
+        if (shouldEmail) channels.push("email");
+
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels,
+              emailArgs: {
+                emailType: "client-moodTrackerReminder",
+                recipientEmail: client.email,
+                recipientUserType: "client",
+                country: country,
+                data: {
+                  countryLabel,
+                },
+              },
+              pushArgs: {
+                notificationType: "mood_tracker_weekly_encouragement",
+                pushTokensArray: client.push_notification_tokens,
+                country: country,
+              },
+              language: client.language,
+            }),
+          },
+        }).catch(console.log);
+      }
     } catch (e) {
-      console.log("Error generating/sending mood tracker report", e);
+      console.log(
+        `Error generating/sending mood tracker notification for client ${client.id}`,
+        e
+      );
       continue;
     }
   }
