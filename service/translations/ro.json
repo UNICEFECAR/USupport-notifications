@@ -27,9 +27,6 @@
   "consultation_started_message": "Consultația dvs. cu furnizorul {1} a început",
   "question_answered": "Question answered",
   "question_answered_message": "Your question was answered by provider {1}",
-  "mood_tracker_reminder": "Quick check-in time: record your mood.",
-  "baseline_assessment_followup": "Baseline reminder",
-  "baseline_assessment_followup_message": "Time for a quick check-in with yourself—retake your baseline today.",
   "mood_tracker_weekly_success": "Felicitări!",
   "mood_tracker_weekly_success_message": "Felicitări, ți-ai înregistrat starea de spirit de {1} ori săptămâna trecută, continuă așa!",
   "mood_tracker_weekly_encouragement": "Ne lipsești!",
@@ -38,5 +35,10 @@
   "mood_good": "Bine",
   "mood_sad": "Trist",
   "mood_depressed": "Deprimat",
-  "mood_worried": "Îngrijorat"
+  "mood_worried": "Îngrijorat",
+  "mood_tracker_reminder": "Verificare rapidă",
+  "mood_tracker_reminder_mesage": "Notează-ți starea de spirit.",
+
+  "baseline_assessment_followup": "Verificare rapidă",
+  "baseline_assessment_followup_message": "Repetă evaluarea de bază chiar astăzi."
 }

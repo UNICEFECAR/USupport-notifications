@@ -27,8 +27,6 @@
   "consultation_started_message": "{1} консультантпен консультацияңыз басталды",
   "question_answered": "Сұрақ жауап берілді",
   "question_answered_message": "{1} консультанті жауап берді",
-  "mood_tracker_reminder": "Жылдам тіркелу уақыты: көңіл-күйіңізді жазып алыңыз.",
-  "baseline_assessment_followup": "Өзіңізбен жылдам тіркелу уақыты - бүгін бастапқы бағаңызды қайталаңыз.",
   "mood_tracker_weekly_success": "Тамаша жұмыс!",
   "mood_tracker_weekly_success_message": "Жарайсыз, өткен аптада көңіл-күйіңізді {1} рет жаздыңыз, осылай жалғастырыңыз!",
   "mood_tracker_weekly_encouragement": "Біз сізді сағынамыз!",
@@ -37,5 +35,10 @@
   "mood_good": "Жақсы",
   "mood_sad": "Қайғылы",
   "mood_depressed": "Депрессияда",
-  "mood_worried": "Қобалжыған"
+  "mood_worried": "Қобалжыған",
+
+  "mood_tracker_reminder": "Жылдам тексеріс",
+  "mood_tracker_reminder_message": "Көңіл-күйіңізді белгілеңіз.",
+  "baseline_assessment_followup": "Жылдам тексеріс",
+  "baseline_assessment_followup_message": "Бүгін негізгі бағалауды қайталаңыз."
 }

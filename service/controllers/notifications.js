@@ -173,7 +173,7 @@ export const raisePushNotification = async ({
       break;
     case "mood_tracker":
       notificationTitle = t("mood_tracker_reminder", language);
-      notificationMessage = "";
+      notificationMessage = t("mood_tracker_reminder_message", language);
       break;
     case "mood_tracker_weekly_success":
       notificationTitle = t("mood_tracker_weekly_success", language);
@@ -190,7 +190,7 @@ export const raisePushNotification = async ({
       break;
     case "baseline_assessment_followup":
       notificationTitle = t("baseline_assessment_followup", language);
-      notificationMessage = "";
+      notificationMessage = t("baseline_assessment_followup_message", language);
       break;
     default:
       break;
