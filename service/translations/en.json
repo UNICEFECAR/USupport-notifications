@@ -27,9 +27,6 @@
   "consultation_started_message": "Your consultation with provider {1} started",
   "question_answered": "Question answered",
   "question_answered_message": "Your question was answered by provider {1}",
-  "mood_tracker_reminder": "Quick check-in time: record your mood.",
-  "baseline_assessment_followup": "Baseline reminder",
-  "baseline_assessment_followup_message": "Time for a quick check-in with yourself—retake your baseline today.",
   "mood_tracker_weekly_success": "Great job!",
   "mood_tracker_weekly_success_message": "Good job, you have logged your mood {1} times last week, keep going!",
   "mood_tracker_weekly_encouragement": "We miss you!",
@@ -38,5 +35,10 @@
   "mood_good": "Good",
   "mood_sad": "Sad",
   "mood_depressed": "Depressed",
-  "mood_worried": "Worried"
+  "mood_worried": "Worried",
+
+  "mood_tracker_reminder": "Quick check-in time",
+  "mood_tracker_reminder_message": "Record your mood",
+  "baseline_assessment_followup": "Quick Self Check-In",
+  "baseline_assessment_followup_message": "Take a moment to retake your baseline today."
 }

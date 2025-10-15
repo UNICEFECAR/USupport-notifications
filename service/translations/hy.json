@@ -27,8 +27,6 @@
   "consultation_started_message": "Խորհրդատուի{1} հետ ձեր խորհրդատվությունն սկսված է։",
   "question_answered": "Question answered",
   "question_answered_message": "Your question was answered by provider {1}",
-  "mood_tracker_reminder": "Արագ գրանցման ժամանակ. գրանցեք ձեր տրամադրությունը։",
-  "baseline_assessment_followup": "Ժամանակն է արագ վերանայելու ինքներդ ձեզ՝ այսօր վերանայեք ձեր սկզբնական դիրքը։",
   "mood_tracker_weekly_success": "Հիանալի աշխատանք!",
   "mood_tracker_weekly_success_message": "Հիանալի աշխատանք, դուք անցած շաբաթ {1} անգամ գրանցել եք ձեր տրամադրությունը, շարունակեք նույն կերպ!",
   "mood_tracker_weekly_encouragement": "Մենք սպասում ենք ձեզ!",
@@ -37,5 +35,10 @@
   "mood_good": "Լավ եմ",
   "mood_sad": "Տխուր եմ",
   "mood_depressed": "Ընկճված եմ",
-  "mood_worried": "Մտահոգ եմ"
+  "mood_worried": "Մտահոգ եմ",
+
+  "mood_tracker_reminder": "Արագ ստուգում",
+  "mood_tracker_reminder_message": "Նշեք ձեր տրամադրությունը։",
+  "baseline_assessment_followup": "Արագ ստուգում",
+  "baseline_assessment_followup_message": "Կատարեք հիմնական գնահատման կրկնումը հենց այսօր։"
 }
