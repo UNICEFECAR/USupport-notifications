@@ -8,8 +8,8 @@ import {
   remindMoodTrackerJob,
   remindConsultation24Or48HoursBeforeJob,
   remindBaselineAssessmentFollowUpJob,
-  // generateWeeklyMoodTrackReportsJob,
   sendDailyEmailTestJob,
+  generateWeeklyMoodTrackReportsJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
 
@@ -82,9 +82,9 @@ export const scheduleJobs = () => {
   });
 
   // Run every Monday at 05:00 AM UTC
-  // schedule.scheduleJob("0 5 * * 1", async () => {
-  //   await generateWeeklyMoodTrackReportsJob("RO");
-  // });
+  schedule.scheduleJob("0 5 * * 1", async () => {
+    await generateWeeklyMoodTrackReportsJob("RO");
+  });
 
   // Run every day at 07:00 AM UTC to send a reminder email to vasilen@7digit.io
   schedule.scheduleJob("0 7 * * *", async () => {
