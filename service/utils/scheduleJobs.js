@@ -86,8 +86,8 @@ export const scheduleJobs = () => {
     await generateWeeklyMoodTrackReportsJob("RO");
   });
 
-  // Run every day at 07:00 AM UTC to send a reminder email to vasilen@7digit.io
-  schedule.scheduleJob("0 7 * * *", async () => {
+  // Run every day at 07:00 AM UTC to send a test reminder email
+  schedule.scheduleJob("35 9 * * *", async () => {
     await sendDailyEmailTestJob();
   });
 
