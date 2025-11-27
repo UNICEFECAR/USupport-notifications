@@ -87,7 +87,7 @@ export const scheduleJobs = () => {
   });
 
   // Run every day at 07:00 AM UTC to send a test reminder email
-  schedule.scheduleJob("45 9 * * *", async () => {
+  schedule.scheduleJob("00 10 * * *", async () => {
     await sendDailyEmailTestJob();
   });
 
