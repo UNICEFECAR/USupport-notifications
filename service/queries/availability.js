@@ -1,10 +1,9 @@
 import { getDBPool } from "#utils/dbConfig";
 
-export const getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery = async ({
-  poolCountry,
-}) =>
-  await getDBPool("piiDb", poolCountry).query(
-    `
+export const getAllActiveProvidersWithAvailabilitySlotsForLessThanWeekQuery =
+  async ({ poolCountry }) =>
+    await getDBPool("piiDb", poolCountry).query(
+      `
         WITH providers AS (
           SELECT
             u.user_id,
@@ -16,6 +15,7 @@ export const getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery = async ({
           JOIN "provider_detail" pd ON u.provider_detail_id = pd.provider_detail_id
           JOIN "notification_preference" np ON u.notification_preference_id = np.notification_preference_id
           WHERE u.deleted_at IS NULL
+            AND pd.status = 'active'
         ),
         slot_union AS (
           -- Regular slots (timestamptz[])
@@ -78,4 +78,4 @@ export const getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery = async ({
         GROUP BY user_id, provider_detail_id, email, email_notifications_enabled, language;
 
     `
-  );
+    );
