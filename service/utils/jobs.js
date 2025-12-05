@@ -15,7 +15,7 @@ import {
 
 import { getAllActiveCountries } from "#queries/countries";
 
-import { getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery } from "#queries/availability";
+import { getAllActiveProvidersWithAvailabilitySlotsForLessThanWeekQuery } from "#queries/availability";
 
 import {
   getActivitiesQuery,
@@ -676,7 +676,7 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
 
     // Get all providers who have availability slots
     const providers =
-      await getAllProvidersWithAvailabilitySlotsForLessThanWeekQuery({
+      await getAllActiveProvidersWithAvailabilitySlotsForLessThanWeekQuery({
         poolCountry,
       })
         .then((res) => {
