@@ -62,6 +62,8 @@ const countriesMap = {
   pl: "poland",
   ro: "romania",
   am: "armenia",
+  cy: "cyprus",
+  ps: "playandheal",
 };
 
 export const getCountryLabelFromAlpha2 = (alpha2) => {
