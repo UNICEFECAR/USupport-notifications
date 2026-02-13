@@ -56,6 +56,8 @@ jobs:
             echo "  CLINICAL_DB_URL_RO: '${{ secrets.CLINICAL_DB_URL_RO }}'"
             echo "  PII_DB_URL_CY: '${{ secrets.PII_DB_URL_CY }}'"
             echo "  CLINICAL_DB_URL_CY: '${{ secrets.CLINICAL_DB_URL_CY }}'"
+            echo "  PII_DB_URL_AM: '${{ secrets.PII_DB_URL_AM }}'"
+            echo "  CLINICAL_DB_URL_AM: '${{ secrets.CLINICAL_DB_URL_AM }}'"
             echo "  MASTER_DB_URL: '${{ secrets.MASTER_DB_URL }}'"
             echo "  FIREBASE_PRIVATE_KEY_ID: '${{ secrets.FIREBASE_PRIVATE_KEY_ID }}'"
             echo "  FIREBASE_PRIVATE_KEY: '${{ secrets.FIREBASE_PRIVATE_KEY }}'"
