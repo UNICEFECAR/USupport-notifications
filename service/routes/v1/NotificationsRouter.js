@@ -26,13 +26,13 @@ router.get("/user", populateUser, async (req, res, next) => {
   const country = req.header("x-country-alpha-2");
 
   const userId = req.user.user_id;
-
   const pageNo = Number(req.query.pageNo);
+  const type = req.query.type || "all";
 
   return await getNotificationsByUserIdSchema
     .noUnknown(true)
     .strict(true)
-    .validate({ country, userId, pageNo })
+    .validate({ country, userId, pageNo, type })
     .then(getNotificationsByUserId)
     .then((result) => res.status(200).send(result))
     .catch(next);

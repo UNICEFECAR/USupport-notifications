@@ -12,22 +12,25 @@ export const addNotificationQuery = async ({
       VALUES ($1, $2, $3::jsonb)
       RETURNING *;
     `,
-    [notificationType, recipientId, data]
+    [notificationType, recipientId, data],
   );
 
 export const getNotificationsByUserIdQuery = async ({
   poolCountry,
   userId,
   pageNo,
+  type,
 }) =>
   await getDBPool("clinicalDb", poolCountry).query(
     `
-      SELECT * FROM notification WHERE user_id = $1
+      SELECT * FROM notification
+      WHERE user_id = $1
+        AND ($3 = 'all' OR is_read = ($3 = 'read'))
       ORDER BY created_at DESC
       LIMIT 10
       OFFSET $2;
     `,
-    [userId, (pageNo - 1) * 10]
+    [userId, (pageNo - 1) * 10, type],
   );
 
 export const getUnreadNotificationsByUserIdQuery = async ({
@@ -38,7 +41,7 @@ export const getUnreadNotificationsByUserIdQuery = async ({
     `
       SELECT * FROM notification WHERE user_id = $1 AND is_read = false;
     `,
-    [userId]
+    [userId],
   );
 
 export const updateNotificationIsReadQuery = async ({
@@ -52,7 +55,7 @@ export const updateNotificationIsReadQuery = async ({
       WHERE notification_id = ANY($1)
       RETURNING *;
     `,
-    [notificationIds]
+    [notificationIds],
   );
 
 export const readAllNotificationsByUserIdQuery = async ({
@@ -66,6 +69,6 @@ export const readAllNotificationsByUserIdQuery = async ({
         WHERE user_id = $1 AND is_read = false
         RETURNING *;
       `,
-    [userId]
+    [userId],
   );
 };

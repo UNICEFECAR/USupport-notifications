@@ -4,6 +4,7 @@ export const getNotificationsByUserIdSchema = yup.object().shape({
   country: yup.string().required(),
   userId: yup.string().uuid().required(),
   pageNo: yup.number().positive().required(),
+  type: yup.string().oneOf(["all", "new", "read"]).required(),
 });
 
 export const updateNotificationIsReadSchema = yup.object().shape({
