@@ -39,5 +39,7 @@
   "mood_tracker_reminder": "Krótka kontrola",
   "mood_tracker_reminder_message": "Zapisz swój nastrój",
   "baseline_assessment_followup": "Krótka kontrola",
-  "baseline_assessment_followup_message": "Powtórz ocenę bazową już dziś."
+  "baseline_assessment_followup_message": "Powtórz ocenę bazową już dziś.",
+  "coupon_reminder": "Skorzystaj z sesji online sponsorowanej przez UNICEF",
+  "coupon_reminder_message": "Na uSupport czekają psychologowie, którzy mogą Ci pomóc."
 }

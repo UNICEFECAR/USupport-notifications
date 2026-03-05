@@ -40,5 +40,7 @@
   "mood_tracker_reminder": "Quick check-in time",
   "mood_tracker_reminder_message": "Record your mood",
   "baseline_assessment_followup": "Quick Self Check-In",
-  "baseline_assessment_followup_message": "Take a moment to retake your baseline today."
+  "baseline_assessment_followup_message": "Take a moment to retake your baseline today.",
+  "coupon_reminder": "Take advantage of an online session sponsored by UNICEF",
+  "coupon_reminder_message": "At uSupport, there are psychologists who can help you."
 }

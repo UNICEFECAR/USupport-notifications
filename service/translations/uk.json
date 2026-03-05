@@ -39,5 +39,7 @@
   "mood_tracker_reminder": "Швидка перевірка",
   "mood_tracker_reminder_message": "Запишіть свій настрій.",
   "baseline_assessment_followup": "Час короткої перевірки",
-  "baseline_assessment_followup_message": "Пройдіть повторне базове оцінювання вже сьогодні."
+  "baseline_assessment_followup_message": "Пройдіть повторне базове оцінювання вже сьогодні.",
+  "coupon_reminder": "Скористайся онлайн-сесією,  за підтримки UNICEF",
+  "coupon_reminder_message": "На платформі uSupport на тебе чекають психологи, які можуть тобі допомогти"
 }
