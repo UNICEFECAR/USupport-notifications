@@ -198,6 +198,10 @@ export const raisePushNotification = async ({
       notificationTitle = t("baseline_assessment_followup", language);
       notificationMessage = t("baseline_assessment_followup_message", language);
       break;
+    case "coupon_reminder":
+      notificationTitle = t("coupon_reminder", language);
+      notificationMessage = t("coupon_reminder_message", language);
+      break;
     default:
       break;
   }

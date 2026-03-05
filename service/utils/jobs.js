@@ -11,6 +11,7 @@ import {
   getProvidersDetailsForUpcomingConsultationsQuery,
   getAllProvidersQuery,
   getClientsDetailsForMoodTrackerReportQuery,
+  getAllClientsWithContactDetailsQuery,
 } from "#queries/users";
 
 import { getAllActiveCountries } from "#queries/countries";
@@ -36,6 +37,8 @@ import {
   getClientsWithOldCompletedBaselineAssessmentsQuery,
   getClientDetailsWithPushTokensQuery,
   getAllMoodTrackDataForPeriodQuery,
+  getClientsEligibleForCouponReminderQuery,
+  getClientsWithAnyCouponConsultationQuery,
 } from "#queries/clients";
 
 import { t } from "#translations/index";
@@ -1210,5 +1213,156 @@ export const sendDailyEmailTestJob = async () => {
     });
   } catch (error) {
     console.error("Error sending daily reminder email ", error);
+  }
+};
+
+/**
+ * Coupon Reminder Job
+ *
+ * Sends email/push notifications to clients who:
+ * a) Have not used a coupon since they registered, OR
+ * b) Used a coupon initially, but cancelled the session more than 24 hours in advance and did not book another one.
+ *
+ */
+export const remindCouponUsageJob = async () => {
+  const poolCountry = "PL";
+  const countryLabel = getCountryLabelFromAlpha2(poolCountry);
+
+  try {
+    // Get all clients with contact details (email or push tokens)
+    const allClientsWithContacts = await getAllClientsWithContactDetailsQuery({
+      poolCountry,
+    })
+      .then((res) => (res.rowCount > 0 ? res.rows : []))
+      .catch((err) => {
+        console.log(
+          `Error getting clients with contact details for ${poolCountry}`,
+          err
+        );
+        return [];
+      });
+
+    if (allClientsWithContacts.length === 0) return;
+
+    // Get clients who have any consultation with a campaign_id
+    const clientsWithAnyCoupon = await getClientsWithAnyCouponConsultationQuery(
+      {
+        poolCountry,
+      }
+    )
+      .then((res) =>
+        res.rowCount > 0
+          ? new Set(res.rows.map((r) => r.client_detail_id))
+          : new Set()
+      )
+      .catch((err) => {
+        console.log(
+          `Error getting clients with coupon consultations for ${poolCountry}`,
+          err
+        );
+        return new Set();
+      });
+
+    // Get clients who used coupon but then cancelled
+    const clientsWhoCancelledCoupon =
+      await getClientsEligibleForCouponReminderQuery({
+        poolCountry,
+      })
+        .then((res) =>
+          res.rowCount > 0
+            ? new Set(res.rows.map((r) => r.client_detail_id))
+            : new Set()
+        )
+        .catch((err) => {
+          console.log(
+            `Error getting clients who cancelled coupon for ${poolCountry}`,
+            err
+          );
+          return new Set();
+        });
+
+    // Find eligible clients:
+    // a) Never used coupon: have contact details but NOT in clientsWithAnyCoupon
+    // b) Cancelled coupon early: in clientsWhoCancelledCoupon
+    const eligibleClients = allClientsWithContacts.filter((client) => {
+      const hasNeverUsedCoupon = !clientsWithAnyCoupon.has(client.id);
+      const hasCancelledCouponEarly = clientsWhoCancelledCoupon.has(client.id);
+      return hasNeverUsedCoupon || hasCancelledCouponEarly;
+    });
+
+    if (eligibleClients.length === 0) return;
+
+    const clientsByLanguage = eligibleClients.reduce((acc, client) => {
+      const lang = client.language || "pl";
+      if (!acc[lang]) acc[lang] = [];
+      acc[lang].push(client);
+      return acc;
+    }, {});
+
+    // Send notifications to each language group
+    for (const [language, clients] of Object.entries(clientsByLanguage)) {
+      const pushTokens = clients
+        .filter(
+          (c) =>
+            c.push_notification_tokens && c.push_notification_tokens.length > 0
+        )
+        .flatMap((c) => c.push_notification_tokens)
+        .filter((token) => !!token);
+
+      const uniquePushTokens = Array.from(new Set(pushTokens));
+
+      if (uniquePushTokens.length > 0) {
+        await handleNotificationConsumerMessage({
+          message: {
+            value: JSON.stringify({
+              channels: ["push"],
+              pushArgs: {
+                notificationType: "coupon_reminder",
+                pushTokensArray: uniquePushTokens,
+                country: poolCountry,
+              },
+              language,
+            }),
+          },
+        }).catch((err) => {
+          console.log(
+            `Error sending push notification for coupon reminder in ${poolCountry}`,
+            err
+          );
+        });
+      }
+
+      // Send individual emails to clients who have email notifications enabled
+      for (const client of clients) {
+        if (client.email && client.emailnotificationsenabled) {
+          await handleNotificationConsumerMessage({
+            message: {
+              value: JSON.stringify({
+                channels: ["email"],
+                emailArgs: {
+                  emailType: "client-couponReminder",
+                  recipientEmail: client.email,
+                  recipientUserType: "client",
+                  data: {
+                    countryLabel,
+                  },
+                },
+                inPlatformArgs: {
+                  country: poolCountry,
+                },
+                language,
+              }),
+            },
+          }).catch((err) => {
+            console.log(
+              `Error sending email for coupon reminder to ${client.email}`,
+              err
+            );
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error in remindCouponUsageJob:", error);
   }
 };

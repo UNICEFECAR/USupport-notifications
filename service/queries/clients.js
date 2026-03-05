@@ -97,3 +97,41 @@ export const getAllMoodTrackDataForPeriodQuery = async ({
     [startDate, endDate]
   );
 };
+
+/**
+ * Get clients who:
+ * a) Never used a coupon (no consultation with campaign_id), OR
+ * b) Used a coupon initially but cancelled more than 24 hours in advance and didn't book another session
+ */
+export const getClientsEligibleForCouponReminderQuery = async ({
+  poolCountry,
+}) => {
+  return await getDBPool("clinicalDb", poolCountry).query(
+    `
+      SELECT DISTINCT client_detail_id
+      FROM consultation
+      WHERE campaign_id IS NOT NULL
+        AND status = 'canceled'
+        AND client_detail_id NOT IN (
+          SELECT DISTINCT client_detail_id
+          FROM consultation
+          WHERE campaign_id IS NOT NULL
+            AND status IN ('scheduled', 'finished')
+        )
+    `,
+    []
+  );
+};
+
+export const getClientsWithAnyCouponConsultationQuery = async ({
+  poolCountry,
+}) => {
+  return await getDBPool("clinicalDb", poolCountry).query(
+    `
+      SELECT DISTINCT client_detail_id
+      FROM consultation
+      WHERE campaign_id IS NOT NULL
+    `,
+    []
+  );
+};

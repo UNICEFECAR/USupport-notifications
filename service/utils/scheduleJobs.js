@@ -10,6 +10,7 @@ import {
   remindBaselineAssessmentFollowUpJob,
   sendDailyEmailTestJob,
   generateWeeklyMoodTrackReportsJob,
+  remindCouponUsageJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
 
@@ -89,6 +90,14 @@ export const scheduleJobs = () => {
   // Run every day at 07:00 AM UTC to send a test reminder email
   schedule.scheduleJob("0 7 * * *", async () => {
     await sendDailyEmailTestJob();
+  });
+
+  // run once a month
+  // make it run today at 15:10
+  // schedule.scheduleJob("0 0 1 * *", async () => {
+  schedule.scheduleJob("10 02 14 * * *", async () => {
+    console.log("Running coupon reminder job");
+    await remindCouponUsageJob();
   });
 
   getAllActiveCountries().then((res) => {

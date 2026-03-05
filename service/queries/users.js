@@ -86,3 +86,52 @@ export const getAllProvidersQuery = async ({ poolCountry }) =>
         WHERE "user".deleted_at is NULL AND "notification_preference".email = true
       `
   );
+
+export const getAllClientsWithContactDetailsQuery = async ({ poolCountry }) =>
+  await getDBPool("piiDb", poolCountry).query(
+    `
+      SELECT 
+        "client_detail".client_detail_id AS id,
+        "client_detail".email AS email,
+        "client_detail".push_notification_tokens,
+        "notification_preference".email AS emailNotificationsEnabled,
+        "user".language,
+        "user".user_id AS userId
+      FROM "user"
+        INNER JOIN "client_detail" ON "user".client_detail_id = "client_detail".client_detail_id
+        INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id
+      WHERE "user".deleted_at IS NULL
+        AND "user".type = 'client'
+        AND (
+          "client_detail".email IS NOT NULL 
+          OR ("client_detail".push_notification_tokens IS NOT NULL AND array_length("client_detail".push_notification_tokens, 1) > 0)
+        );
+    `
+  );
+
+export const getClientsDetailsByIdsForCouponReminderQuery = async ({
+  poolCountry,
+  clientDetailIds,
+}) =>
+  await getDBPool("piiDb", poolCountry).query(
+    `
+      SELECT 
+        "client_detail".client_detail_id AS id,
+        "client_detail".email AS email,
+        "client_detail".push_notification_tokens,
+        "notification_preference".email AS emailNotificationsEnabled,
+        "user".language,
+        "user".user_id AS userId
+      FROM "user"
+        INNER JOIN "client_detail" ON "user".client_detail_id = "client_detail".client_detail_id
+        INNER JOIN "notification_preference" ON "user".notification_preference_id = "notification_preference".notification_preference_id
+      WHERE "user".deleted_at IS NULL
+        AND "user".type = 'client'
+        AND "client_detail".client_detail_id = ANY($1::UUID[])
+        AND (
+          "client_detail".email IS NOT NULL 
+          OR ("client_detail".push_notification_tokens IS NOT NULL AND array_length("client_detail".push_notification_tokens, 1) > 0)
+        );
+    `,
+    [clientDetailIds]
+  );
