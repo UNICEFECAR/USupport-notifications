@@ -27,11 +27,17 @@ export const raiseInPlatformNotification = async ({
   });
 };
 
-export const getNotificationsByUserId = async ({ country, userId, pageNo }) => {
+export const getNotificationsByUserId = async ({
+  country,
+  userId,
+  pageNo,
+  type,
+}) => {
   return await getNotificationsByUserIdQuery({
     poolCountry: country,
     userId,
     pageNo,
+    type,
   })
     .then((res) => {
       if (res.rowCount === 0) {
@@ -113,7 +119,7 @@ export const raisePushNotification = async ({
           ? "consultation_cancellation_message"
           : "consultation_cancellation_by_provider_message",
         language,
-        [data.providerName]
+        [data.providerName],
       );
       break;
     case "consultation_suggestion_booking":
@@ -121,7 +127,7 @@ export const raisePushNotification = async ({
       notificationMessage = t(
         "consultation_suggestion_booking_message",
         language,
-        [data.providerName]
+        [data.providerName],
       );
       break;
     case "consultation_reschedule":
@@ -142,7 +148,7 @@ export const raisePushNotification = async ({
       notificationMessage = t(
         "consultation_reminder_24_hours_before_message",
         language,
-        [data.providerName]
+        [data.providerName],
       );
       break;
     case "consultation_remind_start_48_hours_before":
@@ -150,7 +156,7 @@ export const raisePushNotification = async ({
       notificationMessage = t(
         "consultation_reminder_48_hours_before_message",
         language,
-        [data.providerName]
+        [data.providerName],
       );
       break;
     case "consultation_started":
@@ -185,7 +191,7 @@ export const raisePushNotification = async ({
       notificationTitle = t("mood_tracker_weekly_encouragement", language);
       notificationMessage = t(
         "mood_tracker_weekly_encouragement_message",
-        language
+        language,
       );
       break;
     case "baseline_assessment_followup":
