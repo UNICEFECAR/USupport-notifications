@@ -92,10 +92,8 @@ export const scheduleJobs = () => {
     await sendDailyEmailTestJob();
   });
 
-  // run once a month
-  // make it run today at 15:10
-  // schedule.scheduleJob("0 0 1 * *", async () => {
-  schedule.scheduleJob("10 02 14 * * *", async () => {
+  // run once a month at the 5th
+  schedule.scheduleJob("0 12 4 * *", async () => {
     console.log("Running coupon reminder job");
     await remindCouponUsageJob();
   });
