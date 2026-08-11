@@ -93,7 +93,7 @@ export const scheduleJobs = () => {
   });
 
   // run once a month at the 5th
-  schedule.scheduleJob("0 12 4 * *", async () => {
+  schedule.scheduleJob("0 12 10 * *", async () => {
     console.log("Running coupon reminder job");
     await remindCouponUsageJob();
   });
