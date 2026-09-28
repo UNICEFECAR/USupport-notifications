@@ -1,4 +1,4 @@
-FROM node:16.5.0-alpine3.13
+FROM node:20-alpine
 
 WORKDIR /home/node/app
 COPY ./service/ .
