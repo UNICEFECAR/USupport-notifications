@@ -57,8 +57,10 @@ export const scheduleJobs = () => {
     await remindConsultation24Or48HoursBeforeJob(false);
   });
 
-  // Run every hour
-  schedule.scheduleJob("0 */1 * * *", async () => {
+  // Run on the hour and the half hour, matching the slot grid. The job snaps
+  // "now" to :00/:30 and matches consultations by exact start time, so the two
+  // have to change together or :30 consultations get no notification at all.
+  schedule.scheduleJob("0,30 * * * *", async () => {
     await remindConsultationHasStartedJob();
   });
 
