@@ -42,6 +42,7 @@ import {
 } from "#queries/clients";
 
 import { t } from "#translations/index";
+import { PROGRAM_COUNTRIES } from "#utils/programCountries";
 
 function getReportDate(date) {
   const newDate = new Date(date);
@@ -74,7 +75,7 @@ export const remindConsultation24Or48HoursBeforeJob = async (
 
   for (let i = 0; i < countries.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
@@ -245,7 +246,7 @@ export const remindConsultationStartJob = async () => {
   // Remind all clients and providers of upcoming consultations for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
@@ -519,7 +520,7 @@ export const remindConsultationHasStartedJob = async () => {
   // Remind clients and providers that the consultation has started for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
@@ -689,7 +690,7 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
   // Remind providers to add more availability slots for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
 
     // Get all providers who have availability slots
@@ -758,7 +759,7 @@ export const generateReportJob = async (type) => {
   // Generate weekly report for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const countryId = country.country_id;
     const poolCountry = country.alpha2;
 

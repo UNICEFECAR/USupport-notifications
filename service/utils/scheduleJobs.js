@@ -13,6 +13,7 @@ import {
   remindCouponUsageJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
+import { PROGRAM_COUNTRIES } from "#utils/programCountries";
 
 const rule = new schedule.RecurrenceRule();
 
@@ -105,6 +106,7 @@ export const scheduleJobs = () => {
 
     for (const country of countries) {
       const alpha2 = country.alpha2;
+      if (PROGRAM_COUNTRIES.includes(alpha2)) continue;
       const countryTime = countryJobs.find((c) => c.country === alpha2) || {
         hour: "18",
         minutes: "00",
