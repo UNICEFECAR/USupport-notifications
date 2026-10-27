@@ -11,7 +11,7 @@ export const getActivitiesQuery = async ({
         FROM consultation
           INNER JOIN transaction_log ON consultation.consultation_id = transaction_log.consultation_id
         WHERE provider_detail_id = ANY($1) 
-            AND (status = 'finished' OR (status = 'scheduled' AND now() > time + interval '1 hour'))
+            AND (status = 'finished' OR (status = 'scheduled' AND now() > time + (duration_minutes * INTERVAL '1 minute')))
             AND date_trunc($2, transaction_log.created_at) = date_trunc($2, now())
             AND date_trunc('year', transaction_log.created_at) = date_trunc('year', now())
     `,

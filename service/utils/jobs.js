@@ -42,6 +42,7 @@ import {
 } from "#queries/clients";
 
 import { t } from "#translations/index";
+import { PROGRAM_COUNTRIES } from "#utils/programCountries";
 
 function getReportDate(date) {
   const newDate = new Date(date);
@@ -74,7 +75,7 @@ export const remindConsultation24Or48HoursBeforeJob = async (
 
   for (let i = 0; i < countries.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
@@ -210,6 +211,7 @@ export const remindConsultation24Or48HoursBeforeJob = async (
                 data: {
                   provider_detail_id: clientConsultation.provider_detail_id,
                   time: clientConsultation.time,
+                  duration_minutes: clientConsultation.duration_minutes,
                   consultation_id: clientConsultation.id,
                 },
               },
@@ -244,7 +246,7 @@ export const remindConsultationStartJob = async () => {
   // Remind all clients and providers of upcoming consultations for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
@@ -391,6 +393,7 @@ export const remindConsultationStartJob = async () => {
                     minToConsultation: timeDiffMin,
                     provider_detail_id: clientConsultation.provider_detail_id,
                     time: clientConsultation.time,
+                    duration_minutes: clientConsultation.duration_minutes,
                     consultation_id: clientConsultation.id,
                   },
                 },
@@ -464,6 +467,7 @@ export const remindConsultationStartJob = async () => {
                     minToConsultation: timeDiffMin,
                     client_detail_id: providerConsultation.client_detail_id,
                     time: providerConsultation.time,
+                    duration_minutes: providerConsultation.duration_minutes,
                     consultation_id: providerConsultation.id,
                   },
                 },
@@ -492,8 +496,18 @@ export const remindConsultationStartJob = async () => {
   }
 };
 
+/** The grid consultations can start on. Must match the provider availability grid. */
+const SLOT_STEP_MINUTES = 30;
+
 export const remindConsultationHasStartedJob = async () => {
-  const now = new Date().setHours(new Date().getHours(), 0, 0, 0) / 1000;
+  // Snap onto the slot grid rather than the top of the hour: a consultation at
+  // 16:30 would otherwise never match and would silently get no notification.
+  // This must stay in step with the cron in scheduleJobs.js, which runs at
+  // :00 and :30.
+  const nowDate = new Date();
+  const snappedMinutes =
+    Math.floor(nowDate.getMinutes() / SLOT_STEP_MINUTES) * SLOT_STEP_MINUTES;
+  const now = nowDate.setHours(nowDate.getHours(), snappedMinutes, 0, 0) / 1000;
 
   // Get all the active countries from the database
   const countries = await getAllActiveCountries()
@@ -506,7 +520,7 @@ export const remindConsultationHasStartedJob = async () => {
   // Remind clients and providers that the consultation has started for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
     const countryLabel = getCountryLabelFromAlpha2(poolCountry);
 
@@ -612,6 +626,7 @@ export const remindConsultationHasStartedJob = async () => {
                 data: {
                   provider_detail_id: consultation.provider_detail_id,
                   time: consultation.time,
+                  duration_minutes: consultation.duration_minutes,
                   consultation_id: consultation.id,
                 },
               },
@@ -650,6 +665,7 @@ export const remindConsultationHasStartedJob = async () => {
                 data: {
                   client_detail_id: consultation.client_detail_id,
                   time: consultation.time,
+                  duration_minutes: consultation.duration_minutes,
                   consultation_id: consultation.id,
                 },
               },
@@ -674,7 +690,7 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
   // Remind providers to add more availability slots for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const poolCountry = country.alpha2;
 
     // Get all providers who have availability slots
@@ -743,7 +759,7 @@ export const generateReportJob = async (type) => {
   // Generate weekly report for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (country.alpha2 === "PS") continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
     const countryId = country.country_id;
     const poolCountry = country.alpha2;
 

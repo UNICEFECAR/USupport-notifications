@@ -13,6 +13,7 @@ import {
   remindCouponUsageJob,
 } from "#utils/jobs";
 import { getAllActiveCountries } from "#queries/countries";
+import { PROGRAM_COUNTRIES } from "#utils/programCountries";
 
 const rule = new schedule.RecurrenceRule();
 
@@ -57,8 +58,10 @@ export const scheduleJobs = () => {
     await remindConsultation24Or48HoursBeforeJob(false);
   });
 
-  // Run every hour
-  schedule.scheduleJob("0 */1 * * *", async () => {
+  // Run on the hour and the half hour, matching the slot grid. The job snaps
+  // "now" to :00/:30 and matches consultations by exact start time, so the two
+  // have to change together or :30 consultations get no notification at all.
+  schedule.scheduleJob("0,30 * * * *", async () => {
     await remindConsultationHasStartedJob();
   });
 
@@ -103,6 +106,7 @@ export const scheduleJobs = () => {
 
     for (const country of countries) {
       const alpha2 = country.alpha2;
+      if (PROGRAM_COUNTRIES.includes(alpha2)) continue;
       const countryTime = countryJobs.find((c) => c.country === alpha2) || {
         hour: "18",
         minutes: "00",
