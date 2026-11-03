@@ -690,7 +690,8 @@ export const remindAddMoreAvailabilitySlotsJob = async () => {
   // Remind providers to add more availability slots for each country
   for (let i = 0; i < countries?.length; i++) {
     const country = countries[i];
-    if (PROGRAM_COUNTRIES.includes(country.alpha2)) continue;
+    if (PROGRAM_COUNTRIES.includes(country.alpha2) || country.alpha2 === "PL")
+      continue;
     const poolCountry = country.alpha2;
 
     // Get all providers who have availability slots
